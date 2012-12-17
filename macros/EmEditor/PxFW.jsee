@@ -1,0 +1,781 @@
+
+//--------------------------------------
+//	PicklesFramework.jsee
+//	(C)Tomoya Koyanagi.
+//	about me: see http://www.pxt.jp/
+//	about Pickles Framework: see http://pickles.pxt.jp/
+//	Last Update: 2012/08/09 12:16
+
+var PxFW = new PicklesFramework();
+PxFW.start();
+1;
+
+function PicklesFramework(){
+	this.start = function(){
+		var menu = CreatePopupMenu();
+		var $num = 1;
+		menu.Add(  '&X HTMLエンティティ変換'                           ,  $num ++  );
+		menu.Add(  '&X 選択した文字列を変数に格納(PHP/JavaScript)'     ,  $num ++  );
+		menu.Add(  '&X 段落マークアップ変換'                           ,  $num ++  );
+		menu.Add(  '&P PxFW - クラススケルトン'                        ,  $num ++  );
+		menu.Add(  '&P PxFW - 入力インターフェイスセット'              ,  $num ++  );
+		menu.Add(  '&H HTMLテンプレート - 左右2分割'                   ,  $num ++  );
+		menu.Add(  '&H HTMLテンプレート - 注釈リスト'                  ,  $num ++  );
+		menu.Add(  '&H PxFW - headセクションにソースを送る'            ,  $num ++ );
+		menu.Add(  '&M ソースコードマークアップ変換(コピペ用)'         ,  $num ++  );
+		menu.Add(  '&M ソースコードマークアップ変換(みるだけ用)'       ,  $num ++  );
+		menu.Add(  '&N Next menu...'                                   ,  $num ++  );
+		var result = menu.Track( eePosMouse );
+
+		$num = 1;
+		if( result == $num ++ ){
+			//	HTMLエンティティ変換
+			return	this.execute_htmlspecialchars();
+		}else if( result == $num ++ ){
+			//	選択した文字列を変数に格納(PHP/JavaScript)
+			return	this.execute_strings2var();
+		}else if( result == $num ++ ){
+			//	Pickles Framework - 段落マークアップ変換
+			return	this.execute_pickles_convert_p();
+		}else if( result == $num ++ ){
+			//	Pickles Framework - クラススケルトン
+			return	this.execute_pickles_classSkeleton();
+		}else if( result == $num ++ ){
+			//	Pickles Framework - 入力インターフェイスセット
+			return	this.execute_pickles_formIFSet();
+		}else if( result == $num ++ ){
+			//	Pickles Framework - HTMLテンプレート - 左右2分割
+			return	this.execute_pickles_htmltpl_pane2block();
+		}else if( result == $num ++ ){
+			//	Pickles Framework - HTMLテンプレート - 注釈リスト
+			return	this.execute_pickles_htmltpl_annotationlist();
+		}else if( result == $num ++ ){
+			//	PxFW - headセクションにソースを送る
+			return	this.execute_pickles_ob2setsrc();
+		}else if( result == $num ++ ){
+			//	Pickles Framework - サンプルソースコードマークアップ変換(コピペ用)
+			return	this.execute_pickles_convert_sourcecode('copy');
+		}else if( result == $num ++ ){
+			//	Pickles Framework - サンプルソースコードマークアップ変換(見てるだけ)
+			return	this.execute_pickles_convert_sourcecode('display');
+		}else if( result == $num ++ ){
+			//	次のメニュー
+			return	this.execute_menu_2();
+		}
+		return	true;
+	}
+
+	/* ----------------------------------------------------------------------------
+	メニューページ2
+	---------------------------------------------------------------------------- */
+	this.execute_menu_2 = function(){
+		var menu = CreatePopupMenu();
+		var $num = 1;
+		menu.Add( '&1 PxFW - ローカルナビゲーションテンプレート'        ,  $num ++ );
+		menu.Add( '&H PxFW - フォームHTML単品'                          ,  $num ++ );
+		menu.Add( '&N Next menu...'                                     ,  $num ++ );
+		var result = menu.Track( eePosMouse );
+
+		$num = 1;
+		if( result == $num ++ ){
+			//	PxFW - ローカルナビゲーション
+			return	this.execute_pickles_tpl_localnavigation();
+		}else if( result == $num ++ ){
+			//	PxFW - フォーム単品
+			return	this.execute_pickles_formUnit();
+		}else if( result == $num ++ ){
+			//	次のメニュー
+			return	this.start();
+		}
+		return	true;
+	}//execute_menu_2();
+
+
+
+	/* ----------------------------------------------------------------------------
+	HTMLエンティティ変換
+	---------------------------------------------------------------------------- */
+	this.execute_htmlspecialchars = function(){
+
+		var FIN = document.selection.Text;
+		FIN = FIN.replace( new RegExp( "&", "gi" ) , '&amp;' );
+		FIN = FIN.replace( new RegExp( "<", "gi" ) , '&lt;' );
+		FIN = FIN.replace( new RegExp( ">", "gi" ) , '&gt;' );
+		FIN = FIN.replace( new RegExp( "\"", "gi" ) , '&quot;' );
+		FIN = FIN.replace( new RegExp( "(\r\n|\r|\n)", "gi" ) , '<br />'+"$1" );
+		document.selection.Text = FIN;
+	//	document.selection.DestructiveInsert( FIN );
+
+		return	true;
+	}
+
+	/* ----------------------------------------------------------------------------
+	選択した文字列を変数に格納(PHP/JavaScript)
+	---------------------------------------------------------------------------- */
+	this.execute_strings2var = function(){
+
+		//  PHP/Perl書式で格納
+		function execute_php_perl(){
+
+			var line_start = document.selection.GetTopPointY( eePosLogical );
+			var line_end = document.selection.GetBottomPointY( eePosLogical );
+			if( document.selection.GetActivePointX( eePosLogical ) == 1 ){ line_end = line_end - 1; }	//	カーソル位置が行の先頭だったら、ラインエンドを一行戻す。
+			var selected_content = '';
+
+			//	変数名を入力させる
+			var sclname = '';
+			while( !sclname ){
+				sclname = prompt( '【必須】格納先の変数名を入力してください。'+'(「$」記号は要りません)' , 'RTN' );
+				if( !sclname ){
+					return	'処理をキャンセルします。';
+				}else{
+					break;
+				}
+			}
+
+			for( i = line_start; i <= line_end; i++ ){
+				document.selection.SetActivePoint( eePosLogical, 1 , i );
+				document.selection.SelectLine();
+
+				var FIN = document.selection.Text;
+				FIN = FIN.replace( new RegExp( "\r\n|\r|\n", "gi" ) , "" );
+				FIN = FIN.replace( new RegExp( "\\\\", "gi" ) , "\\\\" );
+				FIN = FIN.replace( new RegExp( "'", "gi" ) , "\\'" );
+				FIN = '	$' + sclname + ' .= \'' + FIN + '\'."\\n";'+"\n";
+				document.selection.Text = FIN;
+			}
+			document.HighlightFind = false;
+
+			return	true;
+
+			/* 「'」を「\\'」に変換 */
+			document.selection.Replace("\x27","\\\\\x27",eeFindNext | eeFindReplaceEscSeq | eeReplaceSelOnly | eeReplaceAll );
+
+			/* 「\n」を「'."\\n";\n\t$RTN .= '」に変換 */
+			document.selection.Replace("\\n","\x27.\x22\\\\n\x22;\\n\\t$RTN .= \x27",eeFindNext | eeFindReplaceEscSeq | eeReplaceSelOnly | eeReplaceAll );
+
+			return	true;
+		}
+
+		//  JavaScript書式で格納
+		function execute_javascript(){
+
+			var line_start = document.selection.GetTopPointY( eePosLogical );
+			var line_end = document.selection.GetBottomPointY( eePosLogical );
+			if( document.selection.GetActivePointX( eePosLogical ) == 1 ){ line_end = line_end - 1; }	//	カーソル位置が行の先頭だったら、ラインエンドを一行戻す。
+			var selected_content = '';
+
+			//	変数名を入力させる
+			var sclname = prompt( '格納先の変数名を入力してください。' , 'RTN' );
+
+			for( i = line_start; i <= line_end; i++ ){
+				document.selection.SetActivePoint( eePosLogical, 1 , i );
+				document.selection.SelectLine();
+
+				var FIN = document.selection.Text;
+				FIN = FIN.replace( new RegExp( "\r\n|\r|\n", "gi" ) , "" );
+				FIN = FIN.replace( new RegExp( "\\\\", "gi" ) , "\\\\" );
+				FIN = FIN.replace( new RegExp( "'", "gi" ) , "\\'" );
+				FIN = '	' + sclname + ' += \'' + FIN + '\' + "\\n";'+"\n";
+				document.selection.Text = FIN;
+
+			}
+			document.HighlightFind = false;
+
+			return	true;
+
+		}
+
+
+		menu = CreatePopupMenu();
+		menu.Add( 'PHP/Perl書式' , 1 );
+		menu.Add( 'JavaScript書式' , 2 );
+		result = menu.Track( eePosMouse );
+
+		if( result == 1 ){
+			return	execute_php_perl();
+		}else if( result == 2 ){
+			return	execute_javascript();
+		}
+		return	false;
+	}
+
+	/* ##################################################################################################################
+		Pickles編集系
+	################################################################################################################## */
+
+	/* ----------------------------------------------------------------------------
+	Pickles - クラススケルトン
+	---------------------------------------------------------------------------- */
+	this.execute_pickles_classSkeleton = function(){
+		var mksrc_pickles_classSkeleton = function(){
+
+			//	クラス名を決定
+			var className = '';
+			while( !className ){
+				if( !className ){ className = 'cont_'; }
+				className = prompt( 'クラス名( 物理名 )を指定してください。' , className );
+				if( !className ){
+					alert('クラス名( 物理名 )は必ず指定してください。');
+				}else{
+					break;
+				}
+			}
+
+			if( !confirm( 'クラス名( 物理名 ) = ' + className + "\n" + '実行しますか？' ) ){
+				alert( 'キャンセルします。' );
+				return	false;
+			}
+
+			var FIN = '';
+
+			FIN += '<'+'?php' + "\n";
+			FIN += '' + "\n";
+			FIN += '	$obj = new '+className+'( $px );' + "\n";
+			FIN += '	return	$obj->start();' + "\n";
+			FIN += '' + "\n";
+			FIN += '/**' + "\n";
+			FIN += ' * コンテンツオブジェクトクラス [ ' + className + ' ]' + "\n";
+			FIN += ' */' + "\n";
+			FIN += 'class '+className+'{' + "\n";
+			FIN += '	private $px;' + "\n";
+			FIN += '' + "\n";
+			FIN += '	/**'+"\n";
+			FIN += '	 * コンストラクタ'+"\n";
+			FIN += '	 */'+"\n";
+			FIN += '	public function __construct( $px ){' + "\n";
+			FIN += '		$this->px = $px;' + "\n";
+			FIN += '	}//__construct()' + "\n";
+			FIN += '' + "\n";
+			FIN += '' + "\n";
+			FIN += '	/**'+"\n";
+			FIN += '	 * 処理の開始'+"\n";
+			FIN += '	 */'+"\n";
+			FIN += '	public function start(){' + "\n";
+			FIN += '		return	$this->page_start();' + "\n";
+			FIN += '	}//start()' + "\n";
+			FIN += '' + "\n";
+			FIN += '	/**'+"\n";
+			FIN += '	 * スタートページ'+"\n";
+			FIN += '	 */'+"\n";
+			FIN += '	private function page_start(){' + "\n";
+			FIN += '		$rtn = \'\';' + "\n";
+			FIN += '		$rtn .= \'<p>この機能は開発中です。</p>\'."\\n";' + "\n";
+			FIN += '		return	$RTN;' + "\n";
+			FIN += '	}//page_start()' + "\n";
+			FIN += '' + "\n";
+			FIN += '}' + "\n";
+			FIN += '' + "\n";
+			FIN += '?'+'>';
+
+			return	FIN;
+		}
+
+		var $FIN = mksrc_pickles_classSkeleton();
+		if( !$FIN ){
+			return	false;
+		}
+		document.write( $FIN );
+		return	true;
+	}
+
+
+
+
+	/* ----------------------------------------------------------------------------
+	Pickles - 入力インターフェイスセット
+	---------------------------------------------------------------------------- */
+	this.execute_pickles_formIFSet = function(){
+		if( !confirm('次のTSV形式を選択して実行すると、それに応じたフォームを生成します。'+'\n'
+			+'・name'+'\n'
+			+'・label'+'\n'
+			+'・must'+'\n'
+			+'・type'+'\n'
+			+'よろしいですか？') ){
+			alert('キャンセルしました。');
+			return true;
+		}
+		var $TXT = document.selection.Text;
+		$TXT = $TXT.replace(new RegExp('\r\n|\r|\n','ig'),"\n");
+		var $splitedTXT = $TXT.split('\n');
+		var $formElmList = [];
+		var self = this;
+		for( var i = 0; i<$splitedTXT.length; i ++ ){
+			if(!$splitedTXT[i].length){ continue; }
+			var $splitedTXTrow = $splitedTXT[i].split("\t");
+			$splitedTXTrow[3] = !$splitedTXTrow[3]?'text':$splitedTXTrow[3];
+			$formElmList.push({
+				name : $splitedTXTrow[0],
+				label: $splitedTXTrow[1],
+				must : $splitedTXTrow[2],
+				type : $splitedTXTrow[3]
+			});
+		}
+		if( !$formElmList.length ){
+			//選択行がなかった場合。
+			$formElmList.push({
+				name : 'feeld_id',
+				label: 'フィールド名',
+				must : 1,
+				type : 'text'
+			});
+		}
+
+		var mksrc_pickles_formIFSet = function(){
+			//	メソッドラベルを決定
+			var methodlabel = '';
+			while( !methodlabel ){
+				if( !methodlabel ){ methodlabel = '論理メソッド名'; }
+				methodlabel = prompt( 'メソッドのラベル( 論理名称 )を指定してください。' , methodlabel );
+				if( !methodlabel ){
+					alert('メソッド名は必ず指定してください。');
+				}else{
+					break;
+				}
+			}
+
+			//	メソッド名を決定
+			var methodname = '';
+			while( !methodname ){
+				if( !methodname ){ methodname = 'physical_method_name'; }
+				methodname = prompt( 'メソッド名( 物理名 )を指定してください。' , methodname );
+				if( !methodname ){
+					alert('メソッド名は必ず指定してください。');
+				}else{
+					break;
+				}
+			}
+
+			if( !confirm( 'メソッドのラベル( 論理名称 ) = ' + methodlabel + "\n" + 'メソッド名( 物理名 ) = ' + methodname + "\n" + '実行しますか？' ) ){
+				alert( 'キャンセルしました。' );
+				return	false;
+			}
+
+
+			var FIN = '';
+			FIN += '	/**'+"\n";
+			FIN += '	 * '+methodlabel+"\n";
+			FIN += '	 */'+"\n";
+			FIN += '	private function start_'+methodname+'(){'+"\n";
+			FIN += '		$error = $this->check_'+methodname+'_check();' + "\n";
+			FIN += '		if( $this->px->req()->get_param(\'mode\') == \'thanks\' ){' + "\n";
+			FIN += '			return	$this->page_'+methodname+'_thanks();' + "\n";
+			FIN += '		}elseif( $this->px->req()->get_param(\'mode\') == \'confirm\' && !count( $error ) ){' + "\n";
+			FIN += '			return	$this->page_'+methodname+'_confirm();' + "\n";
+			FIN += '		}elseif( $this->px->req()->get_param(\'mode\') == \'execute\' && !count( $error ) ){' + "\n";
+			FIN += '			return	$this->execute_'+methodname+'_execute();' + "\n";
+			FIN += '		}elseif( !strlen( $this->px->req()->get_param(\'mode\') ) ){' + "\n";
+			FIN += '			$error = array();' + "\n";
+			FIN += '			//  UTODO:' + "\n";
+			FIN += '			//    ここには、初回アクセス時の、' + "\n";
+			FIN += '			//    フォームの初期化処理を記述します。' + "\n";
+			for( var i = 0; i<$formElmList.length; i ++ ){
+				FIN += '			$this->px->req()->setin(\''+$formElmList[i].name+'\',\'\');' + "\n";
+			}
+			FIN += '		}' + "\n";
+			FIN += '		return	$this->page_'+methodname+'_input( $error );' + "\n";
+			FIN += '	}' + "\n";
+			FIN += '	/**'+"\n";
+			FIN += '	 * '+methodlabel+'：入力'+"\n";
+			FIN += '	 */'+"\n";
+			FIN += '	private function page_'+methodname+'_input( $error ){'+"\n";
+			FIN += '		$RTN = \'\';' + "\n";
+			FIN += "\n";
+			FIN += '		$RTN .= \'<p>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'	必要事項を入力して、「確認する」ボタンをクリックしてください。<br />\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'</p>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'<p>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'	<span class="must">*必須</span> が付いている項目は必ず入力してください。<br />\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'</p>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->req()->get_request_file_path() )).\'" method="post">\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'<table width="100%" class="deftable">\'."\\n";' + "\n";
+			for( var i = 0; i<$formElmList.length; i ++ ){
+				FIN += '		//  '+self.htmlspecialchars($formElmList[i].label)+' ('+self.htmlspecialchars($formElmList[i].name)+')' + "\n";
+				FIN += '		$RTN .= \'	<tr>\'."\\n";' + "\n";
+				FIN += '		$RTN .= \'		<th width="30%"><div>'+self.htmlspecialchars($formElmList[i].label);
+				if( $formElmList[i].must ){
+					FIN += ' <span class="must">*必須</span>';
+				}
+				FIN += '</div></th>\'."\\n";' + "\n";
+				FIN += '		$RTN .= \'		<td width="70%">\'."\\n";' + "\n";
+				FIN += '		$RTN .= \'			<div><input type="text" name="'+self.htmlspecialchars($formElmList[i].name)+'" value="\'.htmlspecialchars( $this->px->req()->get_param(\''+self.htmlspecialchars($formElmList[i].name)+'\') ).\'" class="inputitems" /></div>\'."\\n";' + "\n";
+				FIN += '		if( strlen( $error[\''+self.htmlspecialchars($formElmList[i].name)+'\'] ) ){' + "\n";
+				FIN += '			$RTN .= \'			<div class="ttr error">\'.$error[\''+self.htmlspecialchars($formElmList[i].name)+'\'].\'</div>\'."\\n";' + "\n";
+				FIN += '		}' + "\n";
+				FIN += '		$RTN .= \'		</td>\'."\\n";' + "\n";
+				FIN += '		$RTN .= \'	</tr>\'."\\n";' + "\n";
+			}
+			FIN += '		$RTN .= \'</table>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'	<p class="ttr AlignC"><input type="submit" value="確認する" /></p>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'	<input type="hidden" name="mode" value="confirm" />\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'</form>\'."\\n";' + "\n";
+			FIN += '		$RTN .= $this->px->theme()->mk_hr()."\\n";' + "\n";
+			FIN += '		$RTN .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->req()->get_request_file_path() )).\'" method="get">\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'	<p class="ttr AlignC"><input type="submit" value="キャンセル" /></p>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'</form>\'."\\n";' + "\n";
+			FIN += '		return	$RTN;' + "\n";
+			FIN += '	}' + "\n";
+			FIN += '	/**'+"\n";
+			FIN += '	 * '+methodlabel+'：確認'+"\n";
+			FIN += '	 */'+"\n";
+			FIN += '	function page_'+methodname+'_confirm(){'+"\n";
+			FIN += '		$RTN = \'\';' + "\n";
+			FIN += '		$HIDDEN = \'\';' + "\n";
+			FIN += "\n";
+			FIN += '		$RTN .= \'<p>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'	入力内容に間違いがないことをご確認ください。<br />\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'</p>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'<p>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'	よろしければ、「保存する」ボタンをクリックしてください。<br />\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'</p>\'."\\n";' + "\n";
+			FIN += "\n";
+			FIN += '		$RTN .= \'<table width="100%" class="deftable">\'."\\n";' + "\n";
+			for( var i = 0; i<$formElmList.length; i ++ ){
+				FIN += '		//  '+self.htmlspecialchars($formElmList[i].label)+' ('+self.htmlspecialchars($formElmList[i].name)+')' + "\n";
+				FIN += '		$RTN .= \'	<tr>\'."\\n";' + "\n";
+				FIN += '		$RTN .= \'		<th width="30%"><div>'+self.htmlspecialchars($formElmList[i].label)+'</div></th>\'."\\n";' + "\n";
+				FIN += '		$RTN .= \'		<td width="70%">\'."\\n";' + "\n";
+				FIN += '		$RTN .= \'			<div>\'.htmlspecialchars( $this->px->req()->get_param(\''+self.htmlspecialchars($formElmList[i].name)+'\') ).\'</div>\'."\\n";' + "\n";
+				FIN += '		$HIDDEN .= \'<input type="hidden" name="'+self.htmlspecialchars($formElmList[i].name)+'" value="\'.htmlspecialchars( $this->px->req()->get_param(\''+self.htmlspecialchars($formElmList[i].name)+'\') ).\'" />\';' + "\n";
+				FIN += '		$RTN .= \'		</td>\'."\\n";' + "\n";
+				FIN += '		$RTN .= \'	</tr>\'."\\n";' + "\n";
+			}
+			FIN += '		$RTN .= \'</table>\'."\\n";' + "\n";
+			FIN += "\n";
+			FIN += '		$RTN .= \'<div class="AlignC">\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->req()->get_request_file_path() )).\'" method="post">\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'	<input type="hidden" name="mode" value="execute" />\'."\\n";' + "\n";
+			FIN += '		$RTN .= $HIDDEN;' + "\n";
+			FIN += '		$RTN .= \'	<input type="submit" value="保存する" />\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'</form>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->req()->get_request_file_path() )).\'" method="post">\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'	<input type="hidden" name="mode" value="input" />\'."\\n";' + "\n";
+			FIN += '		$RTN .= $HIDDEN;' + "\n";
+			FIN += '		$RTN .= \'	<input type="submit" value="訂正する" />\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'</form>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'</div>\'."\\n";' + "\n";
+			FIN += '		$RTN .= $this->px->theme()->mk_hr()."\\n";' + "\n";
+			FIN += '		$RTN .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->site()->get_parent() )).\'" method="get">\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'	<p class="center"><input type="submit" value="キャンセル" /></p>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'</form>\'."\\n";' + "\n";
+			FIN += '		return	$RTN;' + "\n";
+			FIN += '	}' + "\n";
+			FIN += '	/**'+"\n";
+			FIN += '	 * '+methodlabel+'：チェック'+"\n";
+			FIN += '	 */'+"\n";
+			FIN += '	function check_'+methodname+'_check(){'+"\n";
+			FIN += '		$RTN = array();' + "\n";
+			for( var i = 0; i<$formElmList.length; i ++ ){
+				FIN += '		//  '+self.htmlspecialchars($formElmList[i].label)+' ('+self.htmlspecialchars($formElmList[i].name)+')' + "\n";
+				FIN += '		';
+				if( $formElmList[i].must ){
+					FIN += 			'if( !strlen( $this->px->req()->get_param(\''+self.htmlspecialchars($formElmList[i].name)+'\') ) ){' + "\n";
+					FIN += '			$RTN[\''+self.htmlspecialchars($formElmList[i].name)+'\'] = \''+self.htmlspecialchars($formElmList[i].label)+'は必ず入力してください。\';' + "\n";
+					FIN += '		}else';
+				}
+				FIN += 			'if( strlen( $this->px->req()->get_param(\''+self.htmlspecialchars($formElmList[i].name)+'\') ) < 10 ){' + "\n";
+				FIN += '			$RTN[\''+self.htmlspecialchars($formElmList[i].name)+'\'] = \''+self.htmlspecialchars($formElmList[i].label)+'は10バイト以上入力してください。\';' + "\n";
+				FIN += '		}elseif( strlen( $this->px->req()->get_param(\''+self.htmlspecialchars($formElmList[i].name)+'\') ) > 100 ){' + "\n";
+				FIN += '			$RTN[\''+self.htmlspecialchars($formElmList[i].name)+'\'] = \''+self.htmlspecialchars($formElmList[i].label)+'は100バイト以内で入力してください。\';' + "\n";
+				FIN += '		}' + "\n";
+			}
+			FIN += '		return	$RTN;' + "\n";
+			FIN += '	}' + "\n";
+			FIN += '	/**'+"\n";
+			FIN += '	 * '+methodlabel+'：実行'+"\n";
+			FIN += '	 */'+"\n";
+			FIN += '	private function execute_'+methodname+'_execute(){'+"\n";
+			FIN += '		if( !$this->user->save_t_lastaction() ){' + "\n";
+			FIN += '			#	2重書き込み防止' + "\n";
+			FIN += '			return	$this->px->theme()->redirect( $this->px->req()->p() , \'mode=thanks\' );' + "\n";
+			FIN += '		}' + "\n";
+			FIN += '' + "\n";
+			FIN += '		// UTODO: [スケルトン]ここに実行する処理を実装してください。' + "\n";
+			FIN += '' + "\n";
+			FIN += '		return	$this->px->theme()->redirect( $this->px->req()->p() , \'mode=thanks\' );' + "\n";
+			FIN += '	}' + "\n";
+			FIN += '	/**'+"\n";
+			FIN += '	 * '+methodlabel+'：完了'+"\n";
+			FIN += '	 */'+"\n";
+			FIN += '	private function page_'+methodname+'_thanks(){'+"\n";
+			FIN += '		$RTN = \'\';' + "\n";
+			FIN += '		$RTN .= \'<p>'+methodlabel+'処理を完了しました。</p>\';' + "\n";
+			FIN += '		$RTN .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->site()->get_parent() )).\'" method="post">\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'	<p><input type="submit" value="戻る" /></p>\'."\\n";' + "\n";
+			FIN += '		$RTN .= \'</form>\'."\\n";' + "\n";
+			FIN += '		return	$RTN;' + "\n";
+			FIN += '	}' + "\n";
+
+			return	FIN;
+		}
+
+		var $FIN = mksrc_pickles_formIFSet();
+		if( !$FIN ){
+			return	false;
+		}
+//		document.write( $FIN );
+		document.selection.Text = $FIN;
+		return	true;
+	}//execute_pickles_formIFSet()
+
+
+
+
+	/* ----------------------------------------------------------------------------
+	Pickles Framework ローカルナビゲーション
+	---------------------------------------------------------------------------- */
+	this.execute_pickles_tpl_localnavigation = function(){
+		var $TXT = document.selection.Text;
+
+		$FIN = '';
+
+		$FIN += '<?php /* ↓↓ ここからローカルナビゲーション ↓↓ */ ?>' + "\n";
+		$FIN += '<?php if( $px->site()->get_page_info($px->req()->get_request_file_path(),\'id\') ){ ?>' + "\n";
+		$FIN += '<div><?php print $px->theme()->mk_link($px->site()->get_parent($px->req()->get_request_file_path())); ?></div>' + "\n";
+		$FIN += '<?php } ?>' + "\n";
+		$FIN += '' + "\n";
+		$FIN += '<?php' + "\n";
+		$FIN += '	$local_bros_page_info = $px->site()->get_bros();' + "\n";
+		$FIN += '?>' + "\n";
+		$FIN += '' + "\n";
+		$FIN += '<?php if( count($local_bros_page_info) ){ ?>' + "\n";
+		$FIN += '<ul>' + "\n";
+		$FIN += '<?php foreach( $local_bros_page_info as $local_page_id ){ ?>' + "\n";
+		$FIN += '<?php $local_page_info = $px->site()->get_page_info($local_page_id); ?>' + "\n";
+		$FIN += '<li><?php print $px->theme()->mk_link($local_page_info[\'path\']); ?>' + "\n";
+		$FIN += '<?php if( $local_page_info[\'id\']==$page_info[\'id\'] ){ ?>' + "\n";
+		$FIN += '<?php $local_children = $px->site()->get_children(); ?>' + "\n";
+		$FIN += '<?php if( count($local_children) ){ ?>' + "\n";
+		$FIN += '<ul>' + "\n";
+		$FIN += '<?php foreach( $local_children as $local_child_page_id ){ ?>' + "\n";
+		$FIN += '<?php $local_child_page_info = $px->site()->get_page_info($local_child_page_id); ?>' + "\n";
+		$FIN += '<li><?php print $px->theme()->mk_link($local_child_page_info[\'path\']); ?></li>' + "\n";
+		$FIN += '<?php }//foreach ?>' + "\n";
+		$FIN += '</ul>' + "\n";
+		$FIN += '<?php }//if ?>' + "\n";
+		$FIN += '<?php }//if ?>' + "\n";
+		$FIN += '</li>' + "\n";
+		$FIN += '<?php }//foreach ?>' + "\n";
+		$FIN += '</ul>' + "\n";
+		$FIN += '<?php }//if ?>' + "\n";
+		$FIN += '<?php /* ↑↑ ここまでローカルナビゲーション ↑↑ */ ?>' + "\n";
+
+		document.selection.Text = $TXT+$FIN;
+		return true;
+	}//execute_pickles_tpl_localnavigation();
+
+	/* ----------------------------------------------------------------------------
+	PxFW headセクションにソースを送る
+	---------------------------------------------------------------------------- */
+	this.execute_pickles_ob2setsrc = function(){
+		var $TXT = document.selection.Text;
+
+		var fin = '';
+		fin += '<?php ob_start(); ?>'+"\n";
+		fin += $TXT + "\n";
+		fin += '<?php $px->theme()->send_content( ob_get_clean(), \'head\' ); ?>'+"\n";
+
+		document.selection.Text = fin;
+		return true;
+	}//execute_pickles_ob2setsrc();
+
+
+	/* ----------------------------------------------------------------------------
+	PxFW - フォームHTML単品
+	---------------------------------------------------------------------------- */
+	this.execute_pickles_formUnit = function(){
+		var fin = '';
+		fin += '$rtn .= \'<form action="\'.t::h( $this->px->theme()->href( $this->px->req()->get_request_file_path() ) ).\'" method="post">\'."\\n";' + "\n";
+		fin += '$rtn .= \'	<p class="center"><input type="submit" value="送信" /></p>\'."\\n";' + "\n";
+		fin += '$rtn .= \'</form>\'."\\n";' + "\n";
+		document.write( fin );
+		return true;
+	}//execute_pickles_formUnit()
+
+
+	/* ----------------------------------------------------------------------------
+	PxFW - HTMLテンプレート - 左右2分割
+	---------------------------------------------------------------------------- */
+	this.execute_pickles_htmltpl_pane2block = function(){
+		var menu = CreatePopupMenu();
+		var $num = 1;
+		menu.Add( '水平 '+(++$num)+'分割' , $num );
+		menu.Add( '水平 '+(++$num)+'分割' , $num );
+		menu.Add( '水平 '+(++$num)+'分割' , $num );
+		var paneCount = menu.Track( eePosMouse );
+		if( !paneCount ){
+			alert( '中止します。' );
+			return	true;
+		}
+
+		var $FIN = '';
+		$FIN += '<div class="unit cols">' + "\n";
+		switch( paneCount ){
+			case 2:
+				$FIN += '	<div class="cols-col cols-w50per"><div class="cols-pad">' + "\n";
+				$FIN += '		<!-- insert parts modules -->' + "\n";
+				$FIN += '	</div></div>' + "\n";
+				$FIN += '	<div class="cols-col cols-w50per cols-last"><div class="cols-pad">' + "\n";
+				$FIN += '		<!-- insert parts modules -->' + "\n";
+				$FIN += '	</div></div>' + "\n";
+				break;
+			case 3:
+				$FIN += '	<div class="cols-col cols-w33per"><div class="cols-pad">' + "\n";
+				$FIN += '		<!-- insert parts modules -->' + "\n";
+				$FIN += '	</div></div>' + "\n";
+				$FIN += '	<div class="cols-col cols-w33per"><div class="cols-pad">' + "\n";
+				$FIN += '		<!-- insert parts modules -->' + "\n";
+				$FIN += '	</div></div>' + "\n";
+				$FIN += '	<div class="cols-col cols-w33per cols-last"><div class="cols-pad">' + "\n";
+				$FIN += '		<!-- insert parts modules -->' + "\n";
+				$FIN += '	</div></div>' + "\n";
+				break;
+			case 4:
+				$FIN += '	<div class="cols-col cols-w25per"><div class="cols-pad">' + "\n";
+				$FIN += '		<!-- insert parts modules -->' + "\n";
+				$FIN += '	</div></div>' + "\n";
+				$FIN += '	<div class="cols-col cols-w25per"><div class="cols-pad">' + "\n";
+				$FIN += '		<!-- insert parts modules -->' + "\n";
+				$FIN += '	</div></div>' + "\n";
+				$FIN += '	<div class="cols-col cols-w25per"><div class="cols-pad">' + "\n";
+				$FIN += '		<!-- insert parts modules -->' + "\n";
+				$FIN += '	</div></div>' + "\n";
+				$FIN += '	<div class="cols-col cols-w25per cols-last"><div class="cols-pad">' + "\n";
+				$FIN += '		<!-- insert parts modules -->' + "\n";
+				$FIN += '	</div></div>' + "\n";
+				break;
+		}
+		$FIN += '</div>' + "\n";
+		document.write( $FIN );
+		return	true;
+	}//execute_pickles_htmltpl_pane2block()
+
+
+
+
+	/* ----------------------------------------------------------------------------
+	PxFW - HTMLテンプレート - 注釈リスト
+	---------------------------------------------------------------------------- */
+	this.execute_pickles_htmltpl_annotationlist = function(){
+		var $TXT = document.selection.Text;
+		var $is_ul = confirm( 'Y = ul / N = dl' );
+
+		$TXT = $TXT.replace(new RegExp('\r\n|\r|\n','ig'),"\n");
+		var $splitedTXT = $TXT.split('\n');
+		var $FIN = '';
+		if( $is_ul ){
+			$FIN += '<ul class="notes">' + "\n";
+			for( var i = 0; i<$splitedTXT.length; i ++ ){
+				if(!$splitedTXT[i].length){continue;}
+				$FIN += '	<li>※'+this.htmlspecialchars( $splitedTXT[i] )+'</li>' + "\n";
+			}
+			$FIN += '</ul>' + "\n";
+		}else{
+			$FIN += '<dl class="notes">' + "\n";
+			for( var i = 0; i<$splitedTXT.length; i ++ ){
+				if(!$splitedTXT[i].length){continue;}
+				$FIN += '	<dt>※'+(i+1)+'</dt>' + "\n";
+				$FIN += '		<dd>'+this.htmlspecialchars( $splitedTXT[i] )+'</dd>' + "\n";
+			}
+			$FIN += '</dl>' + "\n";
+		}
+		document.selection.Text = $FIN;
+//		document.write( $FIN );
+		return	true;
+	}
+
+
+	/* ----------------------------------------------------------------------------
+	PxFW - 段落マークアップ変換
+	---------------------------------------------------------------------------- */
+	this.execute_pickles_convert_p = function(){
+		var $TXT = document.selection.Text;
+		$TXT = $TXT.replace( new RegExp( "&", "gi" ) , '&amp;' );
+		$TXT = $TXT.replace( new RegExp( "<", "gi" ) , '&lt;' );
+		$TXT = $TXT.replace( new RegExp( ">", "gi" ) , '&gt;' );
+		$TXT = $TXT.replace( new RegExp( "\"", "gi" ) , '&quot;' );
+		$TXT = $TXT.replace( new RegExp( "(\r\n|\r|\n)", "gi" ) , '<br />'+"$1" );
+
+		var $FIN = '';
+		$FIN += '<p>' + "\n";
+		$FIN += $TXT;
+		$FIN += '</p>' + "\n";
+		document.selection.Text = $FIN;
+
+	//	document.selection.DestructiveInsert( $FIN );
+		return	true;
+	}
+
+	/* ----------------------------------------------------------------------------
+	PxFW - ソースコードマークアップ変換
+	---------------------------------------------------------------------------- */
+	this.execute_pickles_convert_sourcecode = function( type ){
+		var $TXT = document.selection.Text;
+		$TXT = $TXT.replace( new RegExp( "&", "gi" ) , '&amp;' );
+		$TXT = $TXT.replace( new RegExp( "<", "gi" ) , '&lt;' );
+		$TXT = $TXT.replace( new RegExp( ">", "gi" ) , '&gt;' );
+		$TXT = $TXT.replace( new RegExp( "\"", "gi" ) , '&quot;' );
+		$TXT = $TXT.replace( new RegExp( "(\r\n|\r|\n)", "gi" ) , ''+"$1" );
+
+		var $FIN = '';
+		$FIN += '<div class="unit">' + "\n";
+		if(type == 'copy'){
+			$FIN += '	<div class="code"><textarea readonly="readonly">';
+			$FIN += $TXT;
+			$FIN += '</textarea></div>' + "\n";
+		}else if(type == 'display'){
+			$FIN += '	<div class="code"><pre><code>';
+			$FIN += $TXT;
+			$FIN += '</code></pre></div>' + "\n";
+		}
+		$FIN += '</div><!-- /.unit -->' + "\n";
+		document.selection.Text = $FIN;
+
+	//	document.selection.DestructiveInsert( $FIN );
+		return	true;
+	}
+
+
+
+
+
+
+
+
+	/* ----------------------------------------------------------------------------
+	文字コードの取得
+	---------------------------------------------------------------------------- */
+	this.get_internal_encoding = function(){
+		return	document.Encoding;
+	}
+	this.get_encoding_name = function( encoding_number ){
+		if( !encoding_number ){ encoding_number = this.get_internal_encoding(); }
+		if( encoding_number == 932 ){
+			return	'Shift_JIS';
+		}else if( encoding_number == 51932 ){
+			return	'EUC-JP';
+		}else if( encoding_number == 50220 || encoding_number == 50221 || encoding_number == 50222 ){
+			return	'JIS';
+		}else if( encoding_number == 65001 ){
+			return	'UTF-8';
+		}else if( encoding_number == 65000 ){
+			return	'UTF-7';
+		}else if( encoding_number == 65538 ){
+			return	'UTF-16BE';
+		}else if( encoding_number == 65537 ){
+			return	'UTF-16LE';
+		}
+		return	'UTF-8';
+	}
+
+	/* ----------------------------------------------------------------------------
+	HTMLエンティティ変換
+	---------------------------------------------------------------------------- */
+	this.htmlspecialchars = function($TXT){
+		$TXT = $TXT.replace( new RegExp( "&", "gi" ) , '&amp;' );
+		$TXT = $TXT.replace( new RegExp( "<", "gi" ) , '&lt;' );
+		$TXT = $TXT.replace( new RegExp( ">", "gi" ) , '&gt;' );
+		$TXT = $TXT.replace( new RegExp( "\"", "gi" ) , '&quot;' );
+		return $TXT;
+	}
+}

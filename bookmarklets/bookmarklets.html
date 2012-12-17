@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+<!--
+readme.
+このHTMLをブラウザで開き、
+ブックマークバーにリンクをドラッグするか、
+右クリックからリンク先をブックマークに追加してください。
+-->
+<meta charset="UTF-8" />
+<title>PxFW Bookmarklets</title>
+</head>
+<body>
+<h1>PxFW Bookmarklets</h1>
+<p>
+	ブックマークバーにリンクをドラッグするか、右クリックからリンク先をブックマークに追加してください。<br />
+</p>
+
+<ul>
+	<li><a href="javascript:(function(){window.open(window.location.href+(window.location.href.indexOf('?',0)>=0?'&':'?')+'PX=clearcache');})();">[PxFW]キャッシュをクリア</a></li>
+	<li><a href="javascript:(function(){window.location.href+=(window.location.href.indexOf('?',0)>=0?'&':'?')+'PX=config';})();">[PxFW]コンフィグを確認</a></li>
+	<li><a href="javascript:(function(){window.location.href+=(window.location.href.indexOf('?',0)>=0?'&':'?')+'PX=publish';})();">[PxFW]パブリッシュする</a></li>
+</li>
+
+<hr />
+<p style="text-align:center;">[ <a href="https://github.com/tomk79/PxFW-1.x">PxFW について</a> ]</p>
+</body>
+</html>

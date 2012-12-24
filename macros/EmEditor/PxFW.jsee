@@ -1,101 +1,61 @@
+/**
+ * PxFW.jsee
+ * (C)Tomoya Koyanagi.
+ * about me: see http://www.pxt.jp/
+ * about Pickles Framework: see http://pickles.pxt.jp/
+ * Last Update: 13:53 2012/12/24
+ */
+new (function (){
+	var _this = this;
 
-//--------------------------------------
-//	PicklesFramework.jsee
-//	(C)Tomoya Koyanagi.
-//	about me: see http://www.pxt.jp/
-//	about Pickles Framework: see http://pickles.pxt.jp/
-//	Last Update: 2012/08/09 12:16
-
-var PxFW = new PicklesFramework();
-PxFW.start();
-1;
-
-function PicklesFramework(){
-	this.start = function(){
-		var menu = CreatePopupMenu();
-		var $num = 1;
-		menu.Add(  '&X HTMLエンティティ変換'                           ,  $num ++  );
-		menu.Add(  '&X 選択した文字列を変数に格納(PHP/JavaScript)'     ,  $num ++  );
-		menu.Add(  '&X 段落マークアップ変換'                           ,  $num ++  );
-		menu.Add(  '&P PxFW - クラススケルトン'                        ,  $num ++  );
-		menu.Add(  '&P PxFW - 入力インターフェイスセット'              ,  $num ++  );
-		menu.Add(  '&H HTMLテンプレート - 左右2分割'                   ,  $num ++  );
-		menu.Add(  '&H HTMLテンプレート - 注釈リスト'                  ,  $num ++  );
-		menu.Add(  '&H PxFW - headセクションにソースを送る'            ,  $num ++ );
-		menu.Add(  '&M ソースコードマークアップ変換(コピペ用)'         ,  $num ++  );
-		menu.Add(  '&M ソースコードマークアップ変換(みるだけ用)'       ,  $num ++  );
-		menu.Add(  '&N Next menu...'                                   ,  $num ++  );
-		var result = menu.Track( eePosMouse );
-
-		$num = 1;
-		if( result == $num ++ ){
-			//	HTMLエンティティ変換
-			return	this.execute_htmlspecialchars();
-		}else if( result == $num ++ ){
-			//	選択した文字列を変数に格納(PHP/JavaScript)
-			return	this.execute_strings2var();
-		}else if( result == $num ++ ){
-			//	Pickles Framework - 段落マークアップ変換
-			return	this.execute_pickles_convert_p();
-		}else if( result == $num ++ ){
-			//	Pickles Framework - クラススケルトン
-			return	this.execute_pickles_classSkeleton();
-		}else if( result == $num ++ ){
-			//	Pickles Framework - 入力インターフェイスセット
-			return	this.execute_pickles_formIFSet();
-		}else if( result == $num ++ ){
-			//	Pickles Framework - HTMLテンプレート - 左右2分割
-			return	this.execute_pickles_htmltpl_pane2block();
-		}else if( result == $num ++ ){
-			//	Pickles Framework - HTMLテンプレート - 注釈リスト
-			return	this.execute_pickles_htmltpl_annotationlist();
-		}else if( result == $num ++ ){
-			//	PxFW - headセクションにソースを送る
-			return	this.execute_pickles_ob2setsrc();
-		}else if( result == $num ++ ){
-			//	Pickles Framework - サンプルソースコードマークアップ変換(コピペ用)
-			return	this.execute_pickles_convert_sourcecode('copy');
-		}else if( result == $num ++ ){
-			//	Pickles Framework - サンプルソースコードマークアップ変換(見てるだけ)
-			return	this.execute_pickles_convert_sourcecode('display');
-		}else if( result == $num ++ ){
-			//	次のメニュー
-			return	this.execute_menu_2();
-		}
-		return	true;
+	/**
+	 * メニューを提示する
+	 */
+	this.start = function( menuNum ){
+		if(!menuNum){menuNum=0;}
+		var $menu = [
+			[
+				{'label':'&X HTMLエンティティ変換'                      , 'function':execute_htmlspecialchars                         , 'attribute': ''       } ,
+				{'label':'&X 選択した文字列を変数に格納(PHP/JavaScript)', 'function':execute_strings2var                              , 'attribute': ''       } ,
+				{'label':'&X 段落マークアップ変換'                      , 'function':execute_pickles_convert_p                        , 'attribute': ''       } ,
+				{'label':'&P PxFW - クラススケルトン'                   , 'function':execute_pickles_classSkeleton                    , 'attribute': ''       } ,
+				{'label':'&P PxFW - 入力インターフェイスセット'         , 'function':execute_pickles_formIFSet                        , 'attribute': ''       } ,
+				{'label':'&H HTMLテンプレート - 左右2分割'              , 'function':execute_pickles_htmltpl_pane2block               , 'attribute': ''       } ,
+				{'label':'&H HTMLテンプレート - 注釈リスト'             , 'function':execute_pickles_htmltpl_annotationlist           , 'attribute': ''       } ,
+				{'label':'&H PxFW - headセクションにソースを送る'       , 'function':execute_pickles_ob2setsrc                        , 'attribute': ''       } ,
+				{'label':'&M ソースコードマークアップ変換(コピペ用)'    , 'function':execute_pickles_convert_sourcecode               , 'attribute': 'copy'   } ,
+				{'label':'&M ソースコードマークアップ変換(みるだけ用)'  , 'function':execute_pickles_convert_sourcecode               , 'attribute': 'display'} ,
+				{'label':'&N Next menu...'                              , 'function':_this.start                                      , 'attribute': 1        }
+			],
+			[
+				{'label':'&1 PxFW - ローカルナビゲーションテンプレート' , 'function':execute_pickles_tpl_localnavigation              , 'attribute': '' } ,
+				{'label':'&H PxFW - フォームHTML単品'                   , 'function':execute_pickles_formUnit                         , 'attribute': '' } ,
+				{'label':'&N Next menu...'                              , 'function':_this.start                                      , 'attribute': 0  }
+			]
+		];
+		return popupMenu($menu[menuNum]);
 	}
 
-	/* ----------------------------------------------------------------------------
-	メニューページ2
-	---------------------------------------------------------------------------- */
-	this.execute_menu_2 = function(){
+	/**
+	 * 配列の定義に基づき、ポップアップメニューを生成し、
+	 */
+	function popupMenu($menu){
 		var menu = CreatePopupMenu();
-		var $num = 1;
-		menu.Add( '&1 PxFW - ローカルナビゲーションテンプレート'        ,  $num ++ );
-		menu.Add( '&H PxFW - フォームHTML単品'                          ,  $num ++ );
-		menu.Add( '&N Next menu...'                                     ,  $num ++ );
-		var result = menu.Track( eePosMouse );
-
-		$num = 1;
-		if( result == $num ++ ){
-			//	PxFW - ローカルナビゲーション
-			return	this.execute_pickles_tpl_localnavigation();
-		}else if( result == $num ++ ){
-			//	PxFW - フォーム単品
-			return	this.execute_pickles_formUnit();
-		}else if( result == $num ++ ){
-			//	次のメニュー
-			return	this.start();
+		for( var $num in $menu ){
+			menu.Add( $menu[$num]['label'], Number($num)+1 );
 		}
-		return	true;
-	}//execute_menu_2();
-
+		var $result = menu.Track( eePosMouse );
+		if( $result>0 && $menu[$result-1] ){
+			return	($menu[$result-1]['function'])($menu[$result-1]['attribute']);
+		}
+		return true;
+	}
 
 
 	/* ----------------------------------------------------------------------------
 	HTMLエンティティ変換
 	---------------------------------------------------------------------------- */
-	this.execute_htmlspecialchars = function(){
+	function execute_htmlspecialchars(){
 
 		var FIN = document.selection.Text;
 		FIN = FIN.replace( new RegExp( "&", "gi" ) , '&amp;' );
@@ -112,7 +72,7 @@ function PicklesFramework(){
 	/* ----------------------------------------------------------------------------
 	選択した文字列を変数に格納(PHP/JavaScript)
 	---------------------------------------------------------------------------- */
-	this.execute_strings2var = function(){
+	function execute_strings2var(){
 
 		//  PHP/Perl書式で格納
 		function execute_php_perl(){
@@ -190,24 +150,24 @@ function PicklesFramework(){
 		menu = CreatePopupMenu();
 		menu.Add( 'PHP/Perl書式' , 1 );
 		menu.Add( 'JavaScript書式' , 2 );
-		result = menu.Track( eePosMouse );
+		$result = menu.Track( eePosMouse );
 
-		if( result == 1 ){
+		if( $result == 1 ){
 			return	execute_php_perl();
-		}else if( result == 2 ){
+		}else if( $result == 2 ){
 			return	execute_javascript();
 		}
 		return	false;
 	}
 
 	/* ##################################################################################################################
-		Pickles編集系
+		PxFW編集系
 	################################################################################################################## */
 
 	/* ----------------------------------------------------------------------------
-	Pickles - クラススケルトン
+	PxFW - クラススケルトン
 	---------------------------------------------------------------------------- */
-	this.execute_pickles_classSkeleton = function(){
+	function execute_pickles_classSkeleton(){
 		var mksrc_pickles_classSkeleton = function(){
 
 			//	クラス名を決定
@@ -232,7 +192,7 @@ function PicklesFramework(){
 			FIN += '<'+'?php' + "\n";
 			FIN += '' + "\n";
 			FIN += '	$obj = new '+className+'( $px );' + "\n";
-			FIN += '	return	$obj->start();' + "\n";
+			FIN += '	print $obj->start();' + "\n";
 			FIN += '' + "\n";
 			FIN += '/**' + "\n";
 			FIN += ' * コンテンツオブジェクトクラス [ ' + className + ' ]' + "\n";
@@ -283,9 +243,9 @@ function PicklesFramework(){
 
 
 	/* ----------------------------------------------------------------------------
-	Pickles - 入力インターフェイスセット
+	PxFW - 入力インターフェイスセット
 	---------------------------------------------------------------------------- */
-	this.execute_pickles_formIFSet = function(){
+	function execute_pickles_formIFSet(){
 		if( !confirm('次のTSV形式を選択して実行すると、それに応じたフォームを生成します。'+'\n'
 			+'・name'+'\n'
 			+'・label'+'\n'
@@ -299,7 +259,6 @@ function PicklesFramework(){
 		$TXT = $TXT.replace(new RegExp('\r\n|\r|\n','ig'),"\n");
 		var $splitedTXT = $TXT.split('\n');
 		var $formElmList = [];
-		var self = this;
 		for( var i = 0; i<$splitedTXT.length; i ++ ){
 			if(!$splitedTXT[i].length){ continue; }
 			var $splitedTXTrow = $splitedTXT[i].split("\t");
@@ -390,17 +349,17 @@ function PicklesFramework(){
 			FIN += '		$RTN .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->req()->get_request_file_path() )).\'" method="post">\'."\\n";' + "\n";
 			FIN += '		$RTN .= \'<table width="100%" class="deftable">\'."\\n";' + "\n";
 			for( var i = 0; i<$formElmList.length; i ++ ){
-				FIN += '		//  '+self.htmlspecialchars($formElmList[i].label)+' ('+self.htmlspecialchars($formElmList[i].name)+')' + "\n";
+				FIN += '		//  '+htmlspecialchars($formElmList[i].label)+' ('+htmlspecialchars($formElmList[i].name)+')' + "\n";
 				FIN += '		$RTN .= \'	<tr>\'."\\n";' + "\n";
-				FIN += '		$RTN .= \'		<th width="30%"><div>'+self.htmlspecialchars($formElmList[i].label);
+				FIN += '		$RTN .= \'		<th width="30%"><div>'+htmlspecialchars($formElmList[i].label);
 				if( $formElmList[i].must ){
 					FIN += ' <span class="must">*必須</span>';
 				}
 				FIN += '</div></th>\'."\\n";' + "\n";
 				FIN += '		$RTN .= \'		<td width="70%">\'."\\n";' + "\n";
-				FIN += '		$RTN .= \'			<div><input type="text" name="'+self.htmlspecialchars($formElmList[i].name)+'" value="\'.htmlspecialchars( $this->px->req()->get_param(\''+self.htmlspecialchars($formElmList[i].name)+'\') ).\'" class="inputitems" /></div>\'."\\n";' + "\n";
-				FIN += '		if( strlen( $error[\''+self.htmlspecialchars($formElmList[i].name)+'\'] ) ){' + "\n";
-				FIN += '			$RTN .= \'			<div class="ttr error">\'.$error[\''+self.htmlspecialchars($formElmList[i].name)+'\'].\'</div>\'."\\n";' + "\n";
+				FIN += '		$RTN .= \'			<div><input type="text" name="'+htmlspecialchars($formElmList[i].name)+'" value="\'.htmlspecialchars( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ).\'" class="inputitems" /></div>\'."\\n";' + "\n";
+				FIN += '		if( strlen( $error[\''+htmlspecialchars($formElmList[i].name)+'\'] ) ){' + "\n";
+				FIN += '			$RTN .= \'			<div class="ttr error">\'.$error[\''+htmlspecialchars($formElmList[i].name)+'\'].\'</div>\'."\\n";' + "\n";
 				FIN += '		}' + "\n";
 				FIN += '		$RTN .= \'		</td>\'."\\n";' + "\n";
 				FIN += '		$RTN .= \'	</tr>\'."\\n";' + "\n";
@@ -431,12 +390,12 @@ function PicklesFramework(){
 			FIN += "\n";
 			FIN += '		$RTN .= \'<table width="100%" class="deftable">\'."\\n";' + "\n";
 			for( var i = 0; i<$formElmList.length; i ++ ){
-				FIN += '		//  '+self.htmlspecialchars($formElmList[i].label)+' ('+self.htmlspecialchars($formElmList[i].name)+')' + "\n";
+				FIN += '		//  '+htmlspecialchars($formElmList[i].label)+' ('+htmlspecialchars($formElmList[i].name)+')' + "\n";
 				FIN += '		$RTN .= \'	<tr>\'."\\n";' + "\n";
-				FIN += '		$RTN .= \'		<th width="30%"><div>'+self.htmlspecialchars($formElmList[i].label)+'</div></th>\'."\\n";' + "\n";
+				FIN += '		$RTN .= \'		<th width="30%"><div>'+htmlspecialchars($formElmList[i].label)+'</div></th>\'."\\n";' + "\n";
 				FIN += '		$RTN .= \'		<td width="70%">\'."\\n";' + "\n";
-				FIN += '		$RTN .= \'			<div>\'.htmlspecialchars( $this->px->req()->get_param(\''+self.htmlspecialchars($formElmList[i].name)+'\') ).\'</div>\'."\\n";' + "\n";
-				FIN += '		$HIDDEN .= \'<input type="hidden" name="'+self.htmlspecialchars($formElmList[i].name)+'" value="\'.htmlspecialchars( $this->px->req()->get_param(\''+self.htmlspecialchars($formElmList[i].name)+'\') ).\'" />\';' + "\n";
+				FIN += '		$RTN .= \'			<div>\'.htmlspecialchars( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ).\'</div>\'."\\n";' + "\n";
+				FIN += '		$HIDDEN .= \'<input type="hidden" name="'+htmlspecialchars($formElmList[i].name)+'" value="\'.htmlspecialchars( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ).\'" />\';' + "\n";
 				FIN += '		$RTN .= \'		</td>\'."\\n";' + "\n";
 				FIN += '		$RTN .= \'	</tr>\'."\\n";' + "\n";
 			}
@@ -466,17 +425,17 @@ function PicklesFramework(){
 			FIN += '	function check_'+methodname+'_check(){'+"\n";
 			FIN += '		$RTN = array();' + "\n";
 			for( var i = 0; i<$formElmList.length; i ++ ){
-				FIN += '		//  '+self.htmlspecialchars($formElmList[i].label)+' ('+self.htmlspecialchars($formElmList[i].name)+')' + "\n";
+				FIN += '		//  '+htmlspecialchars($formElmList[i].label)+' ('+htmlspecialchars($formElmList[i].name)+')' + "\n";
 				FIN += '		';
 				if( $formElmList[i].must ){
-					FIN += 			'if( !strlen( $this->px->req()->get_param(\''+self.htmlspecialchars($formElmList[i].name)+'\') ) ){' + "\n";
-					FIN += '			$RTN[\''+self.htmlspecialchars($formElmList[i].name)+'\'] = \''+self.htmlspecialchars($formElmList[i].label)+'は必ず入力してください。\';' + "\n";
+					FIN += 			'if( !strlen( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ) ){' + "\n";
+					FIN += '			$RTN[\''+htmlspecialchars($formElmList[i].name)+'\'] = \''+htmlspecialchars($formElmList[i].label)+'は必ず入力してください。\';' + "\n";
 					FIN += '		}else';
 				}
-				FIN += 			'if( strlen( $this->px->req()->get_param(\''+self.htmlspecialchars($formElmList[i].name)+'\') ) < 10 ){' + "\n";
-				FIN += '			$RTN[\''+self.htmlspecialchars($formElmList[i].name)+'\'] = \''+self.htmlspecialchars($formElmList[i].label)+'は10バイト以上入力してください。\';' + "\n";
-				FIN += '		}elseif( strlen( $this->px->req()->get_param(\''+self.htmlspecialchars($formElmList[i].name)+'\') ) > 100 ){' + "\n";
-				FIN += '			$RTN[\''+self.htmlspecialchars($formElmList[i].name)+'\'] = \''+self.htmlspecialchars($formElmList[i].label)+'は100バイト以内で入力してください。\';' + "\n";
+				FIN += 			'if( strlen( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ) < 10 ){' + "\n";
+				FIN += '			$RTN[\''+htmlspecialchars($formElmList[i].name)+'\'] = \''+htmlspecialchars($formElmList[i].label)+'は10バイト以上入力してください。\';' + "\n";
+				FIN += '		}elseif( strlen( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ) > 100 ){' + "\n";
+				FIN += '			$RTN[\''+htmlspecialchars($formElmList[i].name)+'\'] = \''+htmlspecialchars($formElmList[i].label)+'は100バイト以内で入力してください。\';' + "\n";
 				FIN += '		}' + "\n";
 			}
 			FIN += '		return	$RTN;' + "\n";
@@ -522,9 +481,9 @@ function PicklesFramework(){
 
 
 	/* ----------------------------------------------------------------------------
-	Pickles Framework ローカルナビゲーション
+	PxFW ローカルナビゲーション
 	---------------------------------------------------------------------------- */
-	this.execute_pickles_tpl_localnavigation = function(){
+	function execute_pickles_tpl_localnavigation(){
 		var $TXT = document.selection.Text;
 
 		$FIN = '';
@@ -567,7 +526,7 @@ function PicklesFramework(){
 	/* ----------------------------------------------------------------------------
 	PxFW headセクションにソースを送る
 	---------------------------------------------------------------------------- */
-	this.execute_pickles_ob2setsrc = function(){
+	function execute_pickles_ob2setsrc(){
 		var $TXT = document.selection.Text;
 
 		var fin = '';
@@ -583,7 +542,7 @@ function PicklesFramework(){
 	/* ----------------------------------------------------------------------------
 	PxFW - フォームHTML単品
 	---------------------------------------------------------------------------- */
-	this.execute_pickles_formUnit = function(){
+	function execute_pickles_formUnit(){
 		var fin = '';
 		fin += '$rtn .= \'<form action="\'.t::h( $this->px->theme()->href( $this->px->req()->get_request_file_path() ) ).\'" method="post">\'."\\n";' + "\n";
 		fin += '$rtn .= \'	<p class="center"><input type="submit" value="送信" /></p>\'."\\n";' + "\n";
@@ -596,7 +555,7 @@ function PicklesFramework(){
 	/* ----------------------------------------------------------------------------
 	PxFW - HTMLテンプレート - 左右2分割
 	---------------------------------------------------------------------------- */
-	this.execute_pickles_htmltpl_pane2block = function(){
+	function execute_pickles_htmltpl_pane2block(){
 		var menu = CreatePopupMenu();
 		var $num = 1;
 		menu.Add( '水平 '+(++$num)+'分割' , $num );
@@ -656,7 +615,7 @@ function PicklesFramework(){
 	/* ----------------------------------------------------------------------------
 	PxFW - HTMLテンプレート - 注釈リスト
 	---------------------------------------------------------------------------- */
-	this.execute_pickles_htmltpl_annotationlist = function(){
+	function execute_pickles_htmltpl_annotationlist(){
 		var $TXT = document.selection.Text;
 		var $is_ul = confirm( 'Y = ul / N = dl' );
 
@@ -667,7 +626,7 @@ function PicklesFramework(){
 			$FIN += '<ul class="notes">' + "\n";
 			for( var i = 0; i<$splitedTXT.length; i ++ ){
 				if(!$splitedTXT[i].length){continue;}
-				$FIN += '	<li>※'+this.htmlspecialchars( $splitedTXT[i] )+'</li>' + "\n";
+				$FIN += '	<li>※'+htmlspecialchars( $splitedTXT[i] )+'</li>' + "\n";
 			}
 			$FIN += '</ul>' + "\n";
 		}else{
@@ -675,7 +634,7 @@ function PicklesFramework(){
 			for( var i = 0; i<$splitedTXT.length; i ++ ){
 				if(!$splitedTXT[i].length){continue;}
 				$FIN += '	<dt>※'+(i+1)+'</dt>' + "\n";
-				$FIN += '		<dd>'+this.htmlspecialchars( $splitedTXT[i] )+'</dd>' + "\n";
+				$FIN += '		<dd>'+htmlspecialchars( $splitedTXT[i] )+'</dd>' + "\n";
 			}
 			$FIN += '</dl>' + "\n";
 		}
@@ -688,7 +647,7 @@ function PicklesFramework(){
 	/* ----------------------------------------------------------------------------
 	PxFW - 段落マークアップ変換
 	---------------------------------------------------------------------------- */
-	this.execute_pickles_convert_p = function(){
+	function execute_pickles_convert_p(){
 		var $TXT = document.selection.Text;
 		$TXT = $TXT.replace( new RegExp( "&", "gi" ) , '&amp;' );
 		$TXT = $TXT.replace( new RegExp( "<", "gi" ) , '&lt;' );
@@ -702,14 +661,14 @@ function PicklesFramework(){
 		$FIN += '</p>' + "\n";
 		document.selection.Text = $FIN;
 
-	//	document.selection.DestructiveInsert( $FIN );
+//		document.selection.DestructiveInsert( $FIN );
 		return	true;
 	}
 
 	/* ----------------------------------------------------------------------------
 	PxFW - ソースコードマークアップ変換
 	---------------------------------------------------------------------------- */
-	this.execute_pickles_convert_sourcecode = function( type ){
+	function execute_pickles_convert_sourcecode( type ){
 		var $TXT = document.selection.Text;
 		$TXT = $TXT.replace( new RegExp( "&", "gi" ) , '&amp;' );
 		$TXT = $TXT.replace( new RegExp( "<", "gi" ) , '&lt;' );
@@ -731,9 +690,9 @@ function PicklesFramework(){
 		$FIN += '</div><!-- /.unit -->' + "\n";
 		document.selection.Text = $FIN;
 
-	//	document.selection.DestructiveInsert( $FIN );
+//		document.selection.DestructiveInsert( $FIN );
 		return	true;
-	}
+	}//execute_pickles_convert_sourcecode()
 
 
 
@@ -745,11 +704,11 @@ function PicklesFramework(){
 	/* ----------------------------------------------------------------------------
 	文字コードの取得
 	---------------------------------------------------------------------------- */
-	this.get_internal_encoding = function(){
+	function get_internal_encoding(){
 		return	document.Encoding;
 	}
-	this.get_encoding_name = function( encoding_number ){
-		if( !encoding_number ){ encoding_number = this.get_internal_encoding(); }
+	function get_encoding_name( encoding_number ){
+		if( !encoding_number ){ encoding_number = get_internal_encoding(); }
 		if( encoding_number == 932 ){
 			return	'Shift_JIS';
 		}else if( encoding_number == 51932 ){
@@ -771,11 +730,13 @@ function PicklesFramework(){
 	/* ----------------------------------------------------------------------------
 	HTMLエンティティ変換
 	---------------------------------------------------------------------------- */
-	this.htmlspecialchars = function($TXT){
+	function htmlspecialchars($TXT){
 		$TXT = $TXT.replace( new RegExp( "&", "gi" ) , '&amp;' );
 		$TXT = $TXT.replace( new RegExp( "<", "gi" ) , '&lt;' );
 		$TXT = $TXT.replace( new RegExp( ">", "gi" ) , '&gt;' );
 		$TXT = $TXT.replace( new RegExp( "\"", "gi" ) , '&quot;' );
 		return $TXT;
 	}
-}
+
+})().start();
+1;

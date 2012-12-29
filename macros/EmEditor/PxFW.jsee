@@ -221,7 +221,7 @@ new (function (){
 			FIN += '	private function page_start(){' + "\n";
 			FIN += '		$rtn = \'\';' + "\n";
 			FIN += '		$rtn .= \'<p>この機能は開発中です。</p>\'."\\n";' + "\n";
-			FIN += '		return	$RTN;' + "\n";
+			FIN += '		return	$rtn;' + "\n";
 			FIN += '	}//page_start()' + "\n";
 			FIN += '' + "\n";
 			FIN += '}' + "\n";
@@ -544,9 +544,39 @@ new (function (){
 	---------------------------------------------------------------------------- */
 	function execute_pickles_formUnit(){
 		var fin = '';
-		fin += '$rtn .= \'<form action="\'.t::h( $this->px->theme()->href( $this->px->req()->get_request_file_path() ) ).\'" method="post">\'."\\n";' + "\n";
-		fin += '$rtn .= \'	<p class="center"><input type="submit" value="送信" /></p>\'."\\n";' + "\n";
-		fin += '$rtn .= \'</form>\'."\\n";' + "\n";
+
+		fin += '<form action="<?php print t::h( $px->theme()->href( $px->req()->get_request_file_path() ) ); ?>" method="post">' + "\n";
+		fin += '<div class="unit">' + "\n";
+		fin += '	<table class="form_elements">' + "\n";
+		fin += '		<thead>' + "\n";
+		fin += '			<tr>' + "\n";
+		fin += '				<th>入力項目名</th>' + "\n";
+		fin += '				<th>入力フィールド</th>' + "\n";
+		fin += '			</tr>' + "\n";
+		fin += '		</thead>' + "\n";
+		fin += '		<tbody>' + "\n";
+		fin += '			<tr>' + "\n";
+		fin += '				<th>テキスト入力</th>' + "\n";
+		fin += '				<td>' + "\n";
+		fin += '					<ul class="form_elements-notes">' + "\n";
+		fin += '						<li>全角カナで入力してください。</li>' + "\n";
+		fin += '						<li>8文字以上入力してください。</li>' + "\n";
+		fin += '					</ul>' + "\n";
+		fin += '					<input type="text" name="" value="" />' + "\n";
+		fin += '				</td>' + "\n";
+		fin += '			</tr>' + "\n";
+		fin += '		</tbody>' + "\n";
+		fin += '	</table>' + "\n";
+		fin += '</div>' + "\n";
+
+		fin += '<div class="unit form_buttons">' + "\n";
+		fin += '	<ul>' + "\n";
+		fin += '		<li class="form_buttons-submit"><input type="submit" name="" value="確認する" /></li>' + "\n";
+		fin += '	</ul>' + "\n";
+		fin += '</div><!-- /.form_buttons -->' + "\n";
+
+		fin += '</form>' + "\n";
+
 		document.write( fin );
 		return true;
 	}//execute_pickles_formUnit()

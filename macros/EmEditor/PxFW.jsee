@@ -111,8 +111,8 @@ new (function (){
 			/* 「'」を「\\'」に変換 */
 			document.selection.Replace("\x27","\\\\\x27",eeFindNext | eeFindReplaceEscSeq | eeReplaceSelOnly | eeReplaceAll );
 
-			/* 「\n」を「'."\\n";\n\t$RTN .= '」に変換 */
-			document.selection.Replace("\\n","\x27.\x22\\\\n\x22;\\n\\t$RTN .= \x27",eeFindNext | eeFindReplaceEscSeq | eeReplaceSelOnly | eeReplaceAll );
+			/* 「\n」を「'."\\n";\n\t$sclname .= '」に変換 */
+			document.selection.Replace("\\n","\x27.\x22\\\\n\x22;\\n\\t$"+sclname+" .= \x27",eeFindNext | eeFindReplaceEscSeq | eeReplaceSelOnly | eeReplaceAll );
 
 			return	true;
 		}
@@ -312,6 +312,8 @@ new (function (){
 
 
 			var FIN = '';
+			FIN += '	// ----------------------------------------------------------------------------' + "\n";
+			FIN += '' + "\n";
 			FIN += '	/**'+"\n";
 			FIN += '	 * '+methodlabel+"\n";
 			FIN += '	 */'+"\n";
@@ -338,131 +340,135 @@ new (function (){
 			FIN += '	 * '+methodlabel+'：入力'+"\n";
 			FIN += '	 */'+"\n";
 			FIN += '	private function page_'+methodname+'_input( $error ){'+"\n";
-			FIN += '		$RTN = \'\';' + "\n";
+			FIN += '		$rtn = \'\';' + "\n";
 			FIN += "\n";
-			FIN += '		$RTN .= \'<p>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'	必要事項を入力して、「確認する」ボタンをクリックしてください。<br />\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'</p>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'<p>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'	<span class="must">*必須</span> が付いている項目は必ず入力してください。<br />\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'</p>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->req()->get_request_file_path() )).\'" method="post">\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'<table style="width:100%;" class="def">\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'<p>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'	必要事項を入力して、「確認する」ボタンをクリックしてください。<br />\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'</p>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'<p>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'	<span>*必須</span> の表示が付いている項目は必ず入力してください。<br />\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'</p>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->req()->get_request_file_path() )).\'" method="post">\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'<table style="width:100%;" class="form_elements">\'."\\n";' + "\n";
 			for( var i = 0; i<$formElmList.length; i ++ ){
 				FIN += '		//  '+htmlspecialchars($formElmList[i].label)+' ('+htmlspecialchars($formElmList[i].name)+')' + "\n";
-				FIN += '		$RTN .= \'	<tr>\'."\\n";' + "\n";
-				FIN += '		$RTN .= \'		<th width="30%"><div>'+htmlspecialchars($formElmList[i].label);
+				FIN += '		$rtn .= \'	<tr>\'."\\n";' + "\n";
+				FIN += '		$rtn .= \'		<th style="width:30%;"><div>'+htmlspecialchars($formElmList[i].label);
 				if( $formElmList[i].must ){
-					FIN += ' <span class="must">*必須</span>';
+					FIN += ' <span class="form_elements-must">*必須</span>';
 				}
 				FIN += '</div></th>\'."\\n";' + "\n";
-				FIN += '		$RTN .= \'		<td width="70%">\'."\\n";' + "\n";
-				FIN += '		$RTN .= \'			<div><input type="text" name="'+htmlspecialchars($formElmList[i].name)+'" value="\'.htmlspecialchars( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ).\'" /></div>\'."\\n";' + "\n";
+				FIN += '		$rtn .= \'		<td style="width:70%;"\'.(strlen( $error[\''+htmlspecialchars($formElmList[i].name)+'\'] )?\' class="form_elements-error"\':\'\').\'>\'."\\n";' + "\n";
+				FIN += '		$rtn .= \'			<div><input type="text" name="'+htmlspecialchars($formElmList[i].name)+'" value="\'.htmlspecialchars( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ).\'" /></div>\'."\\n";' + "\n";
 				FIN += '		if( strlen( $error[\''+htmlspecialchars($formElmList[i].name)+'\'] ) ){' + "\n";
-				FIN += '			$RTN .= \'			<div class="error">\'.$error[\''+htmlspecialchars($formElmList[i].name)+'\'].\'</div>\'."\\n";' + "\n";
+				FIN += '			$rtn .= \'			<div class="error">\'.$error[\''+htmlspecialchars($formElmList[i].name)+'\'].\'</div>\'."\\n";' + "\n";
 				FIN += '		}' + "\n";
-				FIN += '		$RTN .= \'		</td>\'."\\n";' + "\n";
-				FIN += '		$RTN .= \'	</tr>\'."\\n";' + "\n";
+				FIN += '		$rtn .= \'		</td>\'."\\n";' + "\n";
+				FIN += '		$rtn .= \'	</tr>\'."\\n";' + "\n";
 			}
-			FIN += '		$RTN .= \'</table>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'	<p class="center"><input type="submit" value="確認する" /></p>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'	<input type="hidden" name="mode" value="confirm" />\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'</form>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'<hr />\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->req()->get_request_file_path() )).\'" method="get">\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'	<p class="center"><input type="submit" value="キャンセル" /></p>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'</form>\'."\\n";' + "\n";
-			FIN += '		return	$RTN;' + "\n";
+			FIN += '		$rtn .= \'</table>\'."\\n";' + "\n";
+
+			FIN += '		$rtn .= \'	<div class="unit form_buttons">\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'		<ul>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'			<li class="form_buttons-submit"><input type="submit" value="確認する" /></li>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'		</ul>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'	</div><!-- /.form_buttons -->\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'	<input type="hidden" name="mode" value="confirm" />\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'</form>\'."\\n";' + "\n";
+
+			FIN += '		$rtn .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->site()->get_parent() )).\'" method="get">\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'<div class="unit form_buttons">\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'	<ul>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'		<li class="form_buttons-cancel"><input type="submit" value="キャンセル" /></li>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'	</ul>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'</div><!-- /.form_buttons -->\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'</form>\'."\\n";' + "\n";
+			FIN += '		return	$rtn;' + "\n";
 			FIN += '	}' + "\n";
 			FIN += '	/**'+"\n";
 			FIN += '	 * '+methodlabel+'：確認'+"\n";
 			FIN += '	 */'+"\n";
 			FIN += '	function page_'+methodname+'_confirm(){'+"\n";
-			FIN += '		$RTN = \'\';' + "\n";
+			FIN += '		$rtn = \'\';' + "\n";
 			FIN += '		$HIDDEN = \'\';' + "\n";
 			FIN += "\n";
-			FIN += '		$RTN .= \'<p>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'	入力内容に間違いがないことをご確認ください。<br />\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'</p>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'<p>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'	よろしければ、「保存する」ボタンをクリックしてください。<br />\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'</p>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'<p>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'	入力内容に間違いがないことをご確認ください。<br />\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'</p>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'<p>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'	よろしければ、「保存する」ボタンをクリックしてください。<br />\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'</p>\'."\\n";' + "\n";
 			FIN += "\n";
-			FIN += '		$RTN .= \'<table style="width:100%;" class="def">\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'<table style="width:100%;" class="form_elements">\'."\\n";' + "\n";
 			for( var i = 0; i<$formElmList.length; i ++ ){
 				FIN += '		//  '+htmlspecialchars($formElmList[i].label)+' ('+htmlspecialchars($formElmList[i].name)+')' + "\n";
-				FIN += '		$RTN .= \'	<tr>\'."\\n";' + "\n";
-				FIN += '		$RTN .= \'		<th width="30%"><div>'+htmlspecialchars($formElmList[i].label)+'</div></th>\'."\\n";' + "\n";
-				FIN += '		$RTN .= \'		<td width="70%">\'."\\n";' + "\n";
-				FIN += '		$RTN .= \'			<div>\'.t::h( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ).\'</div>\'."\\n";' + "\n";
+				FIN += '		$rtn .= \'	<tr>\'."\\n";' + "\n";
+				FIN += '		$rtn .= \'		<th style="width:30%;"><div>'+htmlspecialchars($formElmList[i].label)+'</div></th>\'."\\n";' + "\n";
+				FIN += '		$rtn .= \'		<td style="width:70%;">\'."\\n";' + "\n";
+				FIN += '		$rtn .= \'			<div>\'.t::h( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ).\'</div>\'."\\n";' + "\n";
 				FIN += '		$HIDDEN .= \'<input type="hidden" name="'+htmlspecialchars($formElmList[i].name)+'" value="\'.t::h( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ).\'" />\';' + "\n";
-				FIN += '		$RTN .= \'		</td>\'."\\n";' + "\n";
-				FIN += '		$RTN .= \'	</tr>\'."\\n";' + "\n";
+				FIN += '		$rtn .= \'		</td>\'."\\n";' + "\n";
+				FIN += '		$rtn .= \'	</tr>\'."\\n";' + "\n";
 			}
-			FIN += '		$RTN .= \'</table>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'</table>\'."\\n";' + "\n";
 			FIN += "\n";
-			FIN += '		$RTN .= \'<div class="AlignC">\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->req()->get_request_file_path() )).\'" method="post">\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'	<input type="hidden" name="mode" value="execute" />\'."\\n";' + "\n";
-			FIN += '		$RTN .= $HIDDEN;' + "\n";
-			FIN += '		$RTN .= \'	<input type="submit" value="保存する" />\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'</form>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->req()->get_request_file_path() )).\'" method="post">\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'	<input type="hidden" name="mode" value="input" />\'."\\n";' + "\n";
-			FIN += '		$RTN .= $HIDDEN;' + "\n";
-			FIN += '		$RTN .= \'	<input type="submit" value="訂正する" />\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'</form>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'</div>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'<hr />\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->site()->get_parent() )).\'" method="get">\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'	<p class="center"><input type="submit" value="キャンセル" /></p>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'</form>\'."\\n";' + "\n";
-			FIN += '		return	$RTN;' + "\n";
+
+			FIN += '		$rtn .= \'<div class="unit form_buttons">\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'	<ul>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'		<li class="form_buttons-submit"><form action="\'.t::h($this->px->theme()->href( $this->px->req()->get_request_file_path() )).\'" method="post"><input type="submit" value="保存する" /><input type="hidden" name="mode" value="execute" />\'.$HIDDEN.\'</form></li>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'		<li class="form_buttons-revise"><form action="\'.t::h($this->px->theme()->href( $this->px->req()->get_request_file_path() )).\'" method="post"><input type="submit" value="訂正する" /><input type="hidden" name="mode" value="input" />\'.$HIDDEN.\'</form></li>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'	</ul>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'</div><!-- /.form_buttons -->\'."\\n";' + "\n";
+
+			FIN += '		$rtn .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->site()->get_parent() )).\'" method="get">\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'<div class="unit form_buttons">\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'	<ul>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'		<li class="form_buttons-cancel"><input type="submit" value="キャンセル" /></li>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'	</ul>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'</div><!-- /.form_buttons -->\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'</form>\'."\\n";' + "\n";
+
+			FIN += '		return	$rtn;' + "\n";
 			FIN += '	}' + "\n";
 			FIN += '	/**'+"\n";
 			FIN += '	 * '+methodlabel+'：チェック'+"\n";
 			FIN += '	 */'+"\n";
 			FIN += '	function check_'+methodname+'_check(){'+"\n";
-			FIN += '		$RTN = array();' + "\n";
+			FIN += '		$rtn = array();' + "\n";
 			for( var i = 0; i<$formElmList.length; i ++ ){
 				FIN += '		//  '+htmlspecialchars($formElmList[i].label)+' ('+htmlspecialchars($formElmList[i].name)+')' + "\n";
 				FIN += '		';
 				if( $formElmList[i].must ){
 					FIN += 			'if( !strlen( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ) ){' + "\n";
-					FIN += '			$RTN[\''+htmlspecialchars($formElmList[i].name)+'\'] = \''+htmlspecialchars($formElmList[i].label)+'は必ず入力してください。\';' + "\n";
+					FIN += '			$rtn[\''+htmlspecialchars($formElmList[i].name)+'\'] = \''+htmlspecialchars($formElmList[i].label)+'は必ず入力してください。\';' + "\n";
 					FIN += '		}else';
 				}
-				FIN += 			'if( strlen( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ) < 10 ){' + "\n";
-				FIN += '			$RTN[\''+htmlspecialchars($formElmList[i].name)+'\'] = \''+htmlspecialchars($formElmList[i].label)+'は10バイト以上入力してください。\';' + "\n";
-				FIN += '		}elseif( strlen( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ) > 100 ){' + "\n";
-				FIN += '			$RTN[\''+htmlspecialchars($formElmList[i].name)+'\'] = \''+htmlspecialchars($formElmList[i].label)+'は100バイト以内で入力してください。\';' + "\n";
+				FIN += 			'if( mb_strlen( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ) < 10 ){' + "\n";
+				FIN += '			$rtn[\''+htmlspecialchars($formElmList[i].name)+'\'] = \''+htmlspecialchars($formElmList[i].label)+'は10文字以上入力してください。\';' + "\n";
+				FIN += '		}elseif( mb_strlen( $this->px->req()->get_param(\''+htmlspecialchars($formElmList[i].name)+'\') ) > 100 ){' + "\n";
+				FIN += '			$rtn[\''+htmlspecialchars($formElmList[i].name)+'\'] = \''+htmlspecialchars($formElmList[i].label)+'は100文字以内で入力してください。\';' + "\n";
 				FIN += '		}' + "\n";
 			}
-			FIN += '		return	$RTN;' + "\n";
+			FIN += '		return	$rtn;' + "\n";
 			FIN += '	}' + "\n";
 			FIN += '	/**'+"\n";
 			FIN += '	 * '+methodlabel+'：実行'+"\n";
 			FIN += '	 */'+"\n";
 			FIN += '	private function execute_'+methodname+'_execute(){'+"\n";
-			FIN += '		if( !$this->user->save_t_lastaction() ){' + "\n";
-			FIN += '			#	2重書き込み防止' + "\n";
-			FIN += '			return	$this->px->theme()->redirect( $this->px->req()->p() , \'mode=thanks\' );' + "\n";
-			FIN += '		}' + "\n";
-			FIN += '' + "\n";
 			FIN += '		// UTODO: [スケルトン]ここに実行する処理を実装してください。' + "\n";
 			FIN += '' + "\n";
-			FIN += '		return	$this->px->theme()->redirect( $this->px->req()->p() , \'mode=thanks\' );' + "\n";
+			FIN += '		return	$this->px->redirect( \'?mode=thanks\' );' + "\n";
 			FIN += '	}' + "\n";
 			FIN += '	/**'+"\n";
 			FIN += '	 * '+methodlabel+'：完了'+"\n";
 			FIN += '	 */'+"\n";
 			FIN += '	private function page_'+methodname+'_thanks(){'+"\n";
-			FIN += '		$RTN = \'\';' + "\n";
-			FIN += '		$RTN .= \'<p>'+methodlabel+'処理を完了しました。</p>\';' + "\n";
-			FIN += '		$RTN .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->site()->get_parent() )).\'" method="post">\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'	<p><input type="submit" value="戻る" /></p>\'."\\n";' + "\n";
-			FIN += '		$RTN .= \'</form>\'."\\n";' + "\n";
-			FIN += '		return	$RTN;' + "\n";
+			FIN += '		$rtn = \'\';' + "\n";
+			FIN += '		$rtn .= \'<p>'+methodlabel+'処理を完了しました。</p>\';' + "\n";
+			FIN += '		$rtn .= \'<form action="\'.t::h($this->px->theme()->href( $this->px->site()->get_parent() )).\'" method="post">\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'	<p><input type="submit" value="戻る" /></p>\'."\\n";' + "\n";
+			FIN += '		$rtn .= \'</form>\'."\\n";' + "\n";
+			FIN += '		return	$rtn;' + "\n";
 			FIN += '	}' + "\n";
 
 			return	FIN;

@@ -1,0 +1,195 @@
+[
+    {
+        "caption": "Pickles Framework (PxFW): Functions: t::h()",
+        "command": "pickles_framework_funcs_htmlspecialchars"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): Functions: t::text2html()",
+        "command": "pickles_framework_funcs_text2html"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): Functions: Selected strings to var (PHP)",
+        "command": "pickles_framework_funcs_string2var",
+        "args": {"lang":"php"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): Functions: Selected strings to var (JavaScript)",
+        "command": "pickles_framework_funcs_string2var",
+        "args": {"lang":"js"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): Functions: Selected strings to var (Phython)",
+        "command": "pickles_framework_funcs_string2var",
+        "args": {"lang":"phython"}
+    } ,
+
+
+
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: p (Paragraph)",
+        "command": "pickles_framework_html_parts_paragraph"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: h2 (Header)",
+        "command": "pickles_framework_html_parts_headers",
+        "args": {"tagName":"h2"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: h3 (Header)",
+        "command": "pickles_framework_html_parts_headers",
+        "args": {"tagName":"h3"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: h4 (Header)",
+        "command": "pickles_framework_html_parts_headers",
+        "args": {"tagName":"h4"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: h5 (Header)",
+        "command": "pickles_framework_html_parts_headers",
+        "args": {"tagName":"h5"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: h6 (Header)",
+        "command": "pickles_framework_html_parts_headers",
+        "args": {"tagName":"h6"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: a (Anchor)",
+        "command": "pickles_framework_html_parts_anchors",
+        "args": {"modName":""}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: a.icon (Anchor)",
+        "command": "pickles_framework_html_parts_anchors",
+        "args": {"modName":"icon"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: a.up (Anchor)",
+        "command": "pickles_framework_html_parts_anchors",
+        "args": {"modName":"up"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: a.down (Anchor)",
+        "command": "pickles_framework_html_parts_anchors",
+        "args": {"modName":"down"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: a.back (Anchor)",
+        "command": "pickles_framework_html_parts_anchors",
+        "args": {"modName":"back"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: span.blank (Anchor Additional Modules)",
+        "command": "pickles_framework_html_parts_span_with_class",
+        "args": {"modName":"blank"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: span.download (Anchor Additional Modules)",
+        "command": "pickles_framework_html_parts_span_with_class",
+        "args": {"modName":"download"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: span.pdf (Anchor Additional Modules)",
+        "command": "pickles_framework_html_parts_span_with_class",
+        "args": {"modName":"pdf"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: span.error (Inline Error Module)",
+        "command": "pickles_framework_html_parts_span_with_class",
+        "args": {"modName":"error"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: ul",
+        "command": "pickles_framework_html_parts_ul"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: ul.notes",
+        "command": "pickles_framework_html_parts_ul_notes"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: ul.nomark",
+        "command": "pickles_framework_html_parts_ul_nomark"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: dl",
+        "command": "pickles_framework_html_parts_dl"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: dl.notes",
+        "command": "pickles_framework_html_parts_dl_notes"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: .date_list",
+        "command": "pickles_framework_html_parts_date_list"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: .imgrep",
+        "command": "pickles_framework_html_parts_imgrep"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: table.def",
+        "command": "pickles_framework_html_parts_table_def"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: .aural",
+        "command": "pickles_framework_html_parts_aural"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: .code (for copy and paste)",
+        "command": "pickles_framework_html_parts_code"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: .code (for display only)",
+        "command": "pickles_framework_html_parts_code2"
+    } ,
+
+    {
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .cols (2 cols)",
+        "command": "pickles_framework_html_units_cols_col2"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .cols (3 cols)",
+        "command": "pickles_framework_html_units_cols_col3"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .cols (4 cols)",
+        "command": "pickles_framework_html_units_cols_col4"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .float_image (Left 50%)",
+        "command": "pickles_framework_html_units_float_image_l1of2"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .float_image (Right 50%)",
+        "command": "pickles_framework_html_units_float_image_r1of2"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .attention",
+        "command": "pickles_framework_html_units_attention"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .thumb_list",
+        "command": "pickles_framework_html_units_thumb_list"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .pager",
+        "command": "pickles_framework_html_units_pager"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .form_buttons (OK)",
+        "command": "pickles_framework_html_units_form_buttons"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .form_buttons (OK/Cancel)",
+        "command": "pickles_framework_html_units_form_buttons_ok_cancel"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .form_buttons (Cancel)",
+        "command": "pickles_framework_html_units_form_buttons_cancel"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .form_error_box",
+        "command": "pickles_framework_html_units_form_error_box"
+    }
+]

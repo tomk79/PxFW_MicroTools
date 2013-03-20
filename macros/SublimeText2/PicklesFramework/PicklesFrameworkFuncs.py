@@ -43,8 +43,8 @@ class PicklesFrameworkFuncsString2varCommand(sublime_plugin.TextCommand):
 		selected_string = re.sub(r'(\\)', '\\\\\\\\', selected_string)
 		selected_string = re.sub(r'(\')', '\\\'', selected_string)
 		if lang == 'php':
-			selected_string = re.sub(r'(\r\n|\r|\n)', '\'."\\\\n";'+"\n"+'	fin .= \'', selected_string)
-			selected_string = '	fin .= \'' + selected_string + '\'."\\n";'+"\n"
+			selected_string = re.sub(r'(\r\n|\r|\n)', '\'."\\\\n";'+"\n"+'	$fin .= \'', selected_string)
+			selected_string = '	$fin .= \'' + selected_string + '\'."\\n";'+"\n"
 		elif lang == 'js':
 			selected_string = re.sub(r'(\r\n|\r|\n)', '\'+"\\\\n";'+"\n"+'	fin += \'', selected_string)
 			selected_string = '	fin += \'' + selected_string + '\'+"\\n";'+"\n"

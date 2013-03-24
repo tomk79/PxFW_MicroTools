@@ -4,8 +4,30 @@ import sublime_plugin
 from xml.sax.saxutils import *
 
 
+class PicklesFrameworkHtmlUnitsUnitCommand(sublime_plugin.TextCommand):
+	#  view.run_command('pickles_framework_html_units_unit')
+	def run(self, edit):
+		# getting selected string
+		selection = self.view.sel()[0]
+		selected_string = self.view.substr(selection)
+
+		# process string
+		fin = ''
+		fin += '<div class="unit">'+"\n"
+		if selected_string:
+			fin += selected_string+"\n"
+		else:
+			fin += '	{$partsModules}'+"\n"
+		fin += '</div><!-- /.unit -->'+"\n"
+		fin += ''+"\n"
+
+		# replace selected string
+		self.view.replace(edit, selection, fin)
+
+
+
+
 class PicklesFrameworkHtmlUnitsColsCol2Command(sublime_plugin.TextCommand):
-	#  view.run_command('pickles_framework_html_parts_code')
 	def run(self, edit):
 		# getting selected string
 		selection = self.view.sel()[0]
@@ -14,16 +36,17 @@ class PicklesFrameworkHtmlUnitsColsCol2Command(sublime_plugin.TextCommand):
 		# process string
 		selected_string = ''
 		selected_string += '<div class="cols unit">'+"\n"
-		selected_string += '	<div class="cols-col cols-w50per"><div class="cols-pad">'+"\n"
+		selected_string += '	<div class="cols-col cols-1of2"><div class="cols-pad">'+"\n"
 		selected_string += '		{$partsModules}'+"\n"
 		selected_string += '	</div></div>'+"\n"
-		selected_string += '	<div class="cols-col cols-w50per cols-last"><div class="cols-pad">'+"\n"
+		selected_string += '	<div class="cols-col cols-1of2 cols-last"><div class="cols-pad">'+"\n"
 		selected_string += '		{$partsModules}'+"\n"
 		selected_string += '	</div></div>'+"\n"
 		selected_string += '</div><!-- / .cols -->'+"\n"
 
 		# replace selected string
 		self.view.replace(edit, selection, selected_string)
+
 
 
 class PicklesFrameworkHtmlUnitsColsCol3Command(sublime_plugin.TextCommand):
@@ -35,13 +58,13 @@ class PicklesFrameworkHtmlUnitsColsCol3Command(sublime_plugin.TextCommand):
 		# process string
 		selected_string = ''
 		selected_string += '<div class="cols unit">'+"\n"
-		selected_string += '	<div class="cols-col cols-w33per"><div class="cols-pad">'+"\n"
+		selected_string += '	<div class="cols-col cols-1of3"><div class="cols-pad">'+"\n"
 		selected_string += '		{$partsModules}'+"\n"
 		selected_string += '	</div></div>'+"\n"
-		selected_string += '	<div class="cols-col cols-w33per"><div class="cols-pad">'+"\n"
+		selected_string += '	<div class="cols-col cols-1of3"><div class="cols-pad">'+"\n"
 		selected_string += '		{$partsModules}'+"\n"
 		selected_string += '	</div></div>'+"\n"
-		selected_string += '	<div class="cols-col cols-w33per cols-last"><div class="cols-pad">'+"\n"
+		selected_string += '	<div class="cols-col cols-1of3 cols-last"><div class="cols-pad">'+"\n"
 		selected_string += '		{$partsModules}'+"\n"
 		selected_string += '	</div></div>'+"\n"
 		selected_string += '</div><!-- / .cols -->'+"\n"
@@ -59,16 +82,16 @@ class PicklesFrameworkHtmlUnitsColsCol4Command(sublime_plugin.TextCommand):
 		# process string
 		selected_string = ''
 		selected_string += '<div class="cols unit">'+"\n"
-		selected_string += '	<div class="cols-col cols-w25per"><div class="cols-pad">'+"\n"
+		selected_string += '	<div class="cols-col cols-1of4"><div class="cols-pad">'+"\n"
 		selected_string += '		{$partsModules}'+"\n"
 		selected_string += '	</div></div>'+"\n"
-		selected_string += '	<div class="cols-col cols-w25per"><div class="cols-pad">'+"\n"
+		selected_string += '	<div class="cols-col cols-1of4"><div class="cols-pad">'+"\n"
 		selected_string += '		{$partsModules}'+"\n"
 		selected_string += '	</div></div>'+"\n"
-		selected_string += '	<div class="cols-col cols-w25per"><div class="cols-pad">'+"\n"
+		selected_string += '	<div class="cols-col cols-1of4"><div class="cols-pad">'+"\n"
 		selected_string += '		{$partsModules}'+"\n"
 		selected_string += '	</div></div>'+"\n"
-		selected_string += '	<div class="cols-col cols-w25per cols-last"><div class="cols-pad">'+"\n"
+		selected_string += '	<div class="cols-col cols-1of4 cols-last"><div class="cols-pad">'+"\n"
 		selected_string += '		{$partsModules}'+"\n"
 		selected_string += '	</div></div>'+"\n"
 		selected_string += '</div><!-- / .cols -->'+"\n"
@@ -78,75 +101,33 @@ class PicklesFrameworkHtmlUnitsColsCol4Command(sublime_plugin.TextCommand):
 
 
 
-class PicklesFrameworkHtmlUnitsFloatImageR1of2Command(sublime_plugin.TextCommand):
-	def run(self, edit):
+class PicklesFrameworkHtmlUnitsFloatMediaCommand(sublime_plugin.TextCommand):
+	def run(self, edit, lr=None, width=None):
 		# getting selected string
 		selection = self.view.sel()[0]
 		selected_string = self.view.substr(selection)
 
+		if not lr:
+			lr = "r"
+		if not width:
+			lr = "1of2"
+
 		# process string
 		selected_string = ''
-		selected_string += '<div class="unit float_image">'+"\n"
-		selected_string += '	<div class="float_image-r50per">'+"\n"
-		selected_string += '		<div class="float_image-image"><img src="{$imagePath}" alt="" /></div>'+"\n"
-		selected_string += '		<p class="float_image-caption">{$string:captionText}</p>'+"\n"
+		selected_string += '<div class="unit float_media">'+"\n"
+		selected_string += '	<div class="float_media-'+lr+width+'">'+"\n"
+		selected_string += '		<div class="float_media-image"><img src="{$imagePath}" alt="" /></div>'+"\n"
+		selected_string += '		<p class="float_media-caption">{$text:captionText}</p>'+"\n"
 		selected_string += '	</div>'+"\n"
-		selected_string += '	<div class="float_image-body">'+"\n"
+		selected_string += '	<div class="float_media-body">'+"\n"
 		selected_string += '		{$partsModules}'+"\n"
 		selected_string += '	</div>'+"\n"
-		selected_string += '</div><!-- /.float_image -->'+"\n"
+		selected_string += '</div><!-- /.float_media -->'+"\n"
 
 		# replace selected string
 		self.view.replace(edit, selection, selected_string)
 
 
-
-class PicklesFrameworkHtmlUnitsFloatImageL1of2Command(sublime_plugin.TextCommand):
-	def run(self, edit):
-		# getting selected string
-		selection = self.view.sel()[0]
-		selected_string = self.view.substr(selection)
-
-		# process string
-		selected_string = ''
-		selected_string += '<div class="unit float_image">'+"\n"
-		selected_string += '	<div class="float_image-l50per">'+"\n"
-		selected_string += '		<div class="float_image-image"><img src="{$imagePath}" alt="" /></div>'+"\n"
-		selected_string += '		<p class="float_image-caption">{$string:captionText}</p>'+"\n"
-		selected_string += '	</div>'+"\n"
-		selected_string += '	<div class="float_image-body">'+"\n"
-		selected_string += '		{$partsModules}'+"\n"
-		selected_string += '	</div>'+"\n"
-		selected_string += '</div><!-- /.float_image -->'+"\n"
-
-		# replace selected string
-		self.view.replace(edit, selection, selected_string)
-
-
-
-
-
-
-
-class PicklesFrameworkHtmlUnitsAttentionCommand(sublime_plugin.TextCommand):
-	def run(self, edit):
-		# getting selected string
-		selection = self.view.sel()[0]
-		selected_string = self.view.substr(selection)
-
-		# process string
-		fin = ''
-		fin += '<div class="unit attention">'+"\n"
-		fin += '	<p class="attention-heading">{$strong}</p>'+"\n"
-		if selected_string:
-			fin += selected_string+"\n"
-		else:
-			fin += '{$partsModules}'+"\n"
-
-		fin += '</div><!-- /.attention -->'+"\n"
-
-		# replace selected string
-		self.view.replace(edit, selection, fin)
 
 
 
@@ -160,13 +141,13 @@ class PicklesFrameworkHtmlUnitsThumbListCommand(sublime_plugin.TextCommand):
 		fin = ''
 		fin += '<div class="unit thumb_list">'+"\n"
 		fin += '	<ul>'+"\n"
-		fin += '		<li><div class="thumb_list-pad"><a href="{$string:href}"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$string:ThumbnailLabel}</span></a></div></li>'+"\n"
-		fin += '		<li><div class="thumb_list-pad"><a href="{$string:href}"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$string:ThumbnailLabel}</span></a></div></li>'+"\n"
-		fin += '		<li><div class="thumb_list-pad"><a href="{$string:href}"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$string:ThumbnailLabel}</span></a></div></li>'+"\n"
-		fin += '		<li><div class="thumb_list-pad"><a href="{$string:href}"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$string:ThumbnailLabel}</span></a></div></li>'+"\n"
-		fin += '		<li><div class="thumb_list-pad"><a href="{$string:href}"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$string:ThumbnailLabel}</span></a></div></li>'+"\n"
-		fin += '		<li><div class="thumb_list-pad"><a href="{$string:href}"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$string:ThumbnailLabel}</span></a></div></li>'+"\n"
-		fin += '		<li><div class="thumb_list-pad"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$string:ThumbnailLabel}</span></div></li>'+"\n"
+		fin += '		<li><div class="thumb_list-pad"><a href="{$href}"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$text:ThumbnailLabel}</span></a></div></li>'+"\n"
+		fin += '		<li><div class="thumb_list-pad"><a href="{$href}"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$text:ThumbnailLabel}</span></a></div></li>'+"\n"
+		fin += '		<li><div class="thumb_list-pad"><a href="{$href}"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$text:ThumbnailLabel}</span></a></div></li>'+"\n"
+		fin += '		<li><div class="thumb_list-pad"><a href="{$href}"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$text:ThumbnailLabel}</span></a></div></li>'+"\n"
+		fin += '		<li><div class="thumb_list-pad"><a href="{$href}"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$text:ThumbnailLabel}</span></a></div></li>'+"\n"
+		fin += '		<li><div class="thumb_list-pad"><a href="{$href}"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$text:ThumbnailLabel}</span></a></div></li>'+"\n"
+		fin += '		<li><div class="thumb_list-pad"><img src="{$imagePath}" alt="" /><span class="thumb_list-caption">{$text:ThumbnailLabel}</span></div></li>'+"\n"
 		fin += '	</ul>'+"\n"
 		fin += '</div><!-- /.thumb_list -->'+"\n"
 

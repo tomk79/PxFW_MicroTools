@@ -100,7 +100,7 @@
         "args": {"modName":"error"}
     } ,
     {
-        "caption": "Pickles Framework (PxFW): HTML Parts Modules: ul",
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: ul (simple unordered list)",
         "command": "pickles_framework_html_parts_ul"
     } ,
     {
@@ -112,7 +112,7 @@
         "command": "pickles_framework_html_parts_ul_nomark"
     } ,
     {
-        "caption": "Pickles Framework (PxFW): HTML Parts Modules: dl",
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: dl (simple description list / definition list)",
         "command": "pickles_framework_html_parts_dl"
     } ,
     {
@@ -143,7 +143,17 @@
         "caption": "Pickles Framework (PxFW): HTML Parts Modules: .code (for display only)",
         "command": "pickles_framework_html_parts_code2"
     } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: .attention_box",
+        "command": "pickles_framework_html_parts_attention_box"
+    } ,
 
+
+
+    {
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .unit",
+        "command": "pickles_framework_html_units_unit"
+    } ,
     {
         "caption": "Pickles Framework (PxFW): HTML Unit Modules: .cols (2 cols)",
         "command": "pickles_framework_html_units_cols_col2"
@@ -157,16 +167,14 @@
         "command": "pickles_framework_html_units_cols_col4"
     } ,
     {
-        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .float_image (Left 50%)",
-        "command": "pickles_framework_html_units_float_image_l1of2"
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .float_media (Left 50%)",
+        "command": "pickles_framework_html_units_float_media",
+        "args": {"lr":"l","width":"1of2"}
     } ,
     {
-        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .float_image (Right 50%)",
-        "command": "pickles_framework_html_units_float_image_r1of2"
-    } ,
-    {
-        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .attention",
-        "command": "pickles_framework_html_units_attention"
+        "caption": "Pickles Framework (PxFW): HTML Unit Modules: .float_media (Right 50%)",
+        "command": "pickles_framework_html_units_float_media",
+        "args": {"lr":"r","width":"1of2"}
     } ,
     {
         "caption": "Pickles Framework (PxFW): HTML Unit Modules: .thumb_list",

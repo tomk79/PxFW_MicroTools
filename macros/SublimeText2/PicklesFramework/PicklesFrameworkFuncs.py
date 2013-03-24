@@ -58,4 +58,3 @@ class PicklesFrameworkFuncsString2varCommand(sublime_plugin.TextCommand):
 
 
 
-

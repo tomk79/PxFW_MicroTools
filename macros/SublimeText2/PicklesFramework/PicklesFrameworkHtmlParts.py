@@ -85,14 +85,24 @@ class PicklesFrameworkHtmlPartsUlCommand(sublime_plugin.TextCommand):
 		selected_string = self.view.substr(selection)
 
 		# process string
-		selected_string = ''
-		selected_string += '<ul>'+"\n"
-		selected_string += '	<li>{$string:listItem}</li>'+"\n"
-		selected_string += '	<li>{$string:listItem}</li>'+"\n"
-		selected_string += '</ul>'+"\n"
+		selected_string = escape(selected_string,{'"':'&quot;'})
+		selected_string = re.sub(r'(\r\n|\r|\n)*$', '', selected_string) # trim
+		selected_string = re.sub(r'^(\r\n|\r|\n)*', '', selected_string) # trim
+		selected_string = re.sub(r'(\r\n|\r|\n)', '</li>'+"\n"+'	<li>', selected_string)
+
+		fin = ''
+		fin += '<ul>'+"\n"
+
+		if not selected_string:
+			fin += '	<li>{$string:listItem}</li>'+"\n"
+			fin += '	<li>{$string:listItem}</li>'+"\n"
+		else:
+			fin += '	<li>'+selected_string+'</li>'+"\n"
+
+		fin += '</ul>'+"\n"
 
 		# replace selected string
-		self.view.replace(edit, selection, ('%s' % selected_string) )
+		self.view.replace(edit, selection, ('%s' % fin) )
 
 
 
@@ -104,16 +114,28 @@ class PicklesFrameworkHtmlPartsUlNotesCommand(sublime_plugin.TextCommand):
 		selected_string = self.view.substr(selection)
 
 		# process string
-		selected_string = ''
-		selected_string += '<ul class="notes">'+"\n"
-		selected_string += '	<li class="notes-li">* {$string:listItem}</li>'+"\n"
-		selected_string += '	<li class="notes-li">* {$string:listItem}</li>'+"\n"
-		selected_string += '</ul>'+"\n"
+		selected_string = escape(selected_string,{'"':'&quot;'})
+		selected_string = re.sub(r'(\r\n|\r|\n)*$', '', selected_string) # trim
+		selected_string = re.sub(r'^(\r\n|\r|\n)*', '', selected_string) # trim
+		selected_string = re.sub(r'(\r\n|\r|\n)', '</li>'+"\n"+'	<li class="notes-li">* ', selected_string)
+
+		fin = ''
+		fin += '<ul class="notes">'+"\n"
+
+		if not selected_string:
+			fin += '	<li class="notes-li">* {$string:listItem}</li>'+"\n"
+			fin += '	<li class="notes-li">* {$string:listItem}</li>'+"\n"
+		else:
+			fin += '	<li class="notes-li">* '+selected_string+'</li>'+"\n"
+
+		fin += '</ul>'+"\n"
 		# ↑[UTODO]マルチバイト文字を出力できず、こうなった。本当は、※を入れられるようにしたい。
 
 		# replace selected string
-		self.view.replace(edit, selection, ('%s' % selected_string) )
+		self.view.replace(edit, selection, ('%s' % fin) )
 
+		# "* " を "※" に置換してください。のメッセージ。
+		sublime.message_dialog('[UTODO] We can not output Multibytes strings. You TODO: replace "* " to "kome" in UTF-8.')
 
 
 class PicklesFrameworkHtmlPartsUlNomarkCommand(sublime_plugin.TextCommand):
@@ -123,14 +145,24 @@ class PicklesFrameworkHtmlPartsUlNomarkCommand(sublime_plugin.TextCommand):
 		selected_string = self.view.substr(selection)
 
 		# process string
-		selected_string = ''
-		selected_string += '<ul class="nomark">'+"\n"
-		selected_string += '	<li class="nomark-li">{$string:listItem}</li>'+"\n"
-		selected_string += '	<li class="nomark-li">{$string:listItem}</li>'+"\n"
-		selected_string += '</ul>'+"\n"
+		selected_string = escape(selected_string,{'"':'&quot;'})
+		selected_string = re.sub(r'(\r\n|\r|\n)*$', '', selected_string) # trim
+		selected_string = re.sub(r'^(\r\n|\r|\n)*', '', selected_string) # trim
+		selected_string = re.sub(r'(\r\n|\r|\n)', '</li>'+"\n"+'	<li class="nomark-li">* ', selected_string)
+
+		fin = ''
+		fin += '<ul class="nomark">'+"\n"
+
+		if not selected_string:
+			fin += '	<li class="nomark-li">{$string:listItem}</li>'+"\n"
+			fin += '	<li class="nomark-li">{$string:listItem}</li>'+"\n"
+		else:
+			fin += '	<li class="nomark-li">'+selected_string+'</li>'+"\n"
+
+		fin += '</ul>'+"\n"
 
 		# replace selected string
-		self.view.replace(edit, selection, ('%s' % selected_string) )
+		self.view.replace(edit, selection, ('%s' % fin) )
 
 
 
@@ -143,18 +175,25 @@ class PicklesFrameworkHtmlPartsDlCommand(sublime_plugin.TextCommand):
 		selected_string = self.view.substr(selection)
 
 		# process string
-		selected_string = ''
-		selected_string += '<dl>'+"\n"
-		selected_string += '	<dt>{$string}</dt>'+"\n"
-		selected_string += '		<dd>{$string}</dd>'+"\n"
-		selected_string += '	<dt>{$string}</dt>'+"\n"
-		selected_string += '		<dd>{$string}</dd>'+"\n"
-		selected_string += '	<dt>{$string}</dt>'+"\n"
-		selected_string += '		<dd>{$string}</dd>'+"\n"
-		selected_string += '</dl>'+"\n"
+		selected_string = escape(selected_string,{'"':'&quot;'})
+
+		fin = ''
+		fin += '<dl>'+"\n"
+		fin += '	<dt>{$string}</dt>'+"\n"
+
+		if not selected_string:
+			fin += '		<dd>{$string}</dd>'+"\n"
+		else:
+			fin += '		<dd>'+selected_string+'</dd>'+"\n"
+
+		fin += '	<dt>{$string}</dt>'+"\n"
+		fin += '		<dd>{$string}</dd>'+"\n"
+		fin += '	<dt>{$string}</dt>'+"\n"
+		fin += '		<dd>{$string}</dd>'+"\n"
+		fin += '</dl>'+"\n"
 
 		# replace selected string
-		self.view.replace(edit, selection, ('%s' % selected_string) )
+		self.view.replace(edit, selection, ('%s' % fin) )
 
 
 
@@ -166,18 +205,25 @@ class PicklesFrameworkHtmlPartsDlNotesCommand(sublime_plugin.TextCommand):
 		selected_string = self.view.substr(selection)
 
 		# process string
-		selected_string = ''
-		selected_string += '<dl class="notes">'+"\n"
-		selected_string += '	<dt class="notes-dt">{$strong}</dt>'+"\n"
-		selected_string += '		<dd class="notes-dd">{$strong}</dd>'+"\n"
-		selected_string += '	<dt class="notes-dt">{$strong}</dt>'+"\n"
-		selected_string += '		<dd class="notes-dd">{$strong}</dd>'+"\n"
-		selected_string += '	<dt class="notes-dt">{$strong}</dt>'+"\n"
-		selected_string += '		<dd class="notes-dd">{$strong}</dd>'+"\n"
-		selected_string += '</dl>'+"\n"
+		selected_string = escape(selected_string,{'"':'&quot;'})
+
+		fin = ''
+		fin += '<dl class="notes">'+"\n"
+		fin += '	<dt class="notes-dt">{$strong}</dt>'+"\n"
+
+		if not selected_string:
+			fin += '		<dd class="notes-dd">{$strong}</dd>'+"\n"
+		else:
+			fin += '		<dd class="notes-dd">'+selected_string+'</dd>'+"\n"
+
+		fin += '	<dt class="notes-dt">{$strong}</dt>'+"\n"
+		fin += '		<dd class="notes-dd">{$strong}</dd>'+"\n"
+		fin += '	<dt class="notes-dt">{$strong}</dt>'+"\n"
+		fin += '		<dd class="notes-dd">{$strong}</dd>'+"\n"
+		fin += '</dl>'+"\n"
 
 		# replace selected string
-		self.view.replace(edit, selection, ('%s' % selected_string) )
+		self.view.replace(edit, selection, ('%s' % fin) )
 
 
 
@@ -334,5 +380,80 @@ class PicklesFrameworkHtmlPartsCode2Command(sublime_plugin.TextCommand):
 
 		# replace selected string
 		self.view.replace(edit, selection, selected_string)
+
+
+
+class PicklesFrameworkHtmlPartsTopicBoxCommand(sublime_plugin.TextCommand):
+	def run(self, edit):
+		# getting selected string
+		selection = self.view.sel()[0]
+		selected_string = self.view.substr(selection)
+
+		# process string
+		fin = ''
+		fin += '<div class="topic_box">'+"\n"
+		fin += '	<p class="topic_box-heading">{$text}</p>'+"\n"
+
+		if selected_string:
+			fin += selected_string+"\n"
+		else:
+			fin += '	<p>{$text}</p>'+"\n"
+			fin += '	{$partsModules}'+"\n"
+
+		fin += '</div><!-- /.topic_box -->'+"\n"
+
+		# replace selected string
+		self.view.replace(edit, selection, fin)
+
+
+
+class PicklesFrameworkHtmlPartsAsideBoxCommand(sublime_plugin.TextCommand):
+	def run(self, edit):
+		# getting selected string
+		selection = self.view.sel()[0]
+		selected_string = self.view.substr(selection)
+
+		# process string
+		fin = ''
+		fin += '<div class="aside_box">'+"\n"
+		fin += '	<p class="aside_box-heading">{$text}</p>'+"\n"
+
+		if selected_string:
+			fin += selected_string+"\n"
+		else:
+			fin += '	<p>{$text}</p>'+"\n"
+			fin += '	{$partsModules}'+"\n"
+
+		fin += '</div><!-- /.aside_box -->'+"\n"
+
+		# replace selected string
+		self.view.replace(edit, selection, fin)
+
+
+
+class PicklesFrameworkHtmlPartsAttentionBoxCommand(sublime_plugin.TextCommand):
+	def run(self, edit):
+		# getting selected string
+		selection = self.view.sel()[0]
+		selected_string = self.view.substr(selection)
+
+		# process string
+		fin = ''
+		fin += '<div class="attention_box">'+"\n"
+		fin += '	<p class="attention_box-heading">{$text}</p>'+"\n"
+
+		if selected_string:
+			fin += selected_string+"\n"
+		else:
+			fin += '	<p>{$text}</p>'+"\n"
+			fin += '	{$partsModules}'+"\n"
+
+		fin += '</div><!-- /.attention_box -->'+"\n"
+
+		# replace selected string
+		self.view.replace(edit, selection, fin)
+
+
+
 
 

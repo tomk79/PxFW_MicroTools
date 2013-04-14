@@ -352,8 +352,8 @@ class PicklesFrameworkHtmlPartsAuralCommand(sublime_plugin.TextCommand):
 
 
 
-class PicklesFrameworkHtmlPartsCodeCommand(sublime_plugin.TextCommand):
-	# view.run_command('pickles_framework_html_parts_code')
+class PicklesFrameworkHtmlPartsCode1Command(sublime_plugin.TextCommand):
+	# view.run_command('pickles_framework_html_parts_code1')
 	def run(self, edit):
 		# getting selected string
 		selection = self.view.sel()[0]
@@ -361,7 +361,7 @@ class PicklesFrameworkHtmlPartsCodeCommand(sublime_plugin.TextCommand):
 
 		# process string
 		selected_string = escape(selected_string,{'"':'&quot;'})
-		selected_string = '<div class="unit">'+"\n"+'	<div class="code"><textarea readonly="readonly">' + selected_string + '</textarea></div>'+"\n"+'</div>'
+		selected_string = '<div class="unit">'+"\n"+'	<div class="code"><textarea readonly="readonly">' + selected_string + '</textarea></div>'+"\n"+'</div>'+"\n"
 
 		# replace selected string
 		self.view.replace(edit, selection, selected_string)
@@ -376,7 +376,7 @@ class PicklesFrameworkHtmlPartsCode2Command(sublime_plugin.TextCommand):
 
 		# process string
 		selected_string = escape(selected_string,{'"':'&quot;'})
-		selected_string = '<div class="unit">'+"\n"+'	<div class="code"><pre><code>' + selected_string + '</code></pre></div>'+"\n"+'</div>'
+		selected_string = '<div class="unit">'+"\n"+'	<div class="code"><pre><code>' + selected_string + '</code></pre></div>'+"\n"+'</div>'+"\n"
 
 		# replace selected string
 		self.view.replace(edit, selection, selected_string)

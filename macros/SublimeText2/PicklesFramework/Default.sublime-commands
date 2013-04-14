@@ -22,12 +22,39 @@
         "command": "pickles_framework_funcs_string2var",
         "args": {"lang":"phython"}
     } ,
+    {
+        "caption": "Pickles Framework (PxFW): Functions: insert $theme->autoindex()",
+        "command": "pickles_framework_funcs_insert_autoindex"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): Functions: wrap <code>",
+        "command": "pickles_framework_funcs_wrap_inline_tag",
+        "args": {"tagName":"code"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): Functions: wrap <div>",
+        "command": "pickles_framework_funcs_wrap_block_tag",
+        "args": {"tagName":"div"}
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): Functions: wrap <blockquote>",
+        "command": "pickles_framework_funcs_wrap_block_tag",
+        "args": {"tagName":"blockquote"}
+    } ,
+
+
+
 
 
 
     {
         "caption": "Pickles Framework (PxFW): HTML Parts Modules: p (Paragraph)",
         "command": "pickles_framework_html_parts_paragraph"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: h1 (Header)",
+        "command": "pickles_framework_html_parts_headers",
+        "args": {"tagName":"h1"}
     } ,
     {
         "caption": "Pickles Framework (PxFW): HTML Parts Modules: h2 (Header)",
@@ -137,7 +164,7 @@
     } ,
     {
         "caption": "Pickles Framework (PxFW): HTML Parts Modules: .code (for copy and paste)",
-        "command": "pickles_framework_html_parts_code"
+        "command": "pickles_framework_html_parts_code1"
     } ,
     {
         "caption": "Pickles Framework (PxFW): HTML Parts Modules: .code (for display only)",
@@ -146,6 +173,14 @@
     {
         "caption": "Pickles Framework (PxFW): HTML Parts Modules: .attention_box",
         "command": "pickles_framework_html_parts_attention_box"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: .topic_box",
+        "command": "pickles_framework_html_parts_topic_box"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: .aside_box",
+        "command": "pickles_framework_html_parts_aside_box"
     } ,
 
 

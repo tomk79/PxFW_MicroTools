@@ -122,20 +122,23 @@ class PicklesFrameworkHtmlPartsUlNotesCommand(sublime_plugin.TextCommand):
 		fin = ''
 		fin += '<ul class="notes">'+"\n"
 
+		kome_utf8 = unicode("e280bb".decode("hex_codec"), "UTF-8");
+			# ↑マルチバイト文字を出力できず、こうなった。本当は、※を入れられるようにしたい。
+			# 　e280bb は ※ の16進数コード
+
 		if not selected_string:
-			fin += '	<li class="notes-li">* {$string:listItem}</li>'+"\n"
-			fin += '	<li class="notes-li">* {$string:listItem}</li>'+"\n"
+			fin += '	<li class="notes-li">'+kome_utf8+' {$string:listItem}</li>'+"\n"
+			fin += '	<li class="notes-li">'+kome_utf8+' {$string:listItem}</li>'+"\n"
 		else:
-			fin += '	<li class="notes-li">* '+selected_string+'</li>'+"\n"
+			fin += '	<li class="notes-li">'+kome_utf8+' '+selected_string+'</li>'+"\n"
 
 		fin += '</ul>'+"\n"
-		# ↑[UTODO]マルチバイト文字を出力できず、こうなった。本当は、※を入れられるようにしたい。
 
 		# replace selected string
 		self.view.replace(edit, selection, ('%s' % fin) )
 
-		# "* " を "※" に置換してください。のメッセージ。
-		sublime.message_dialog('[UTODO] We can not output Multibytes strings. You TODO: replace "* " to "kome" in UTF-8.')
+		# # "* " を "※" に置換してください。のメッセージ。
+		# sublime.message_dialog('[UTODO] We can not output Multibytes strings. You TODO: replace "* " to "kome" in UTF-8.')
 
 
 class PicklesFrameworkHtmlPartsUlNomarkCommand(sublime_plugin.TextCommand):

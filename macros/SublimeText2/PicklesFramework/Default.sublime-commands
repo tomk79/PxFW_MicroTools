@@ -27,6 +27,10 @@
         "command": "pickles_framework_funcs_insert_autoindex"
     } ,
     {
+        "caption": "Pickles Framework (PxFW): Functions: insert $theme->send_content()",
+        "command": "pickles_framework_funcs_insert_send_content"
+    } ,
+    {
         "caption": "Pickles Framework (PxFW): Functions: wrap <code>",
         "command": "pickles_framework_funcs_wrap_inline_tag",
         "args": {"tagName":"code"}

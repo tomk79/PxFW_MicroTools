@@ -67,6 +67,26 @@ class PicklesFrameworkFuncsInsertAutoindexCommand(sublime_plugin.TextCommand):
 		self.view.replace(edit, selection, fin)
 
 
+class PicklesFrameworkFuncsInsertSendContentCommand(sublime_plugin.TextCommand):
+	def run(self, edit):
+		# getting selected string
+		selection = self.view.sel()[0]
+		selected_string = self.view.substr(selection)
+
+		# process string
+		fin = ''
+		fin += "\n"
+		fin += '<?php ob_start(); ?>'+"\n"
+		fin += "\n"
+		fin += selected_string +"\n"
+		fin += "\n"
+		fin += '<?php print( $px->theme()->send_content( ob_get_clean(), \'head\' ) ); ?>'+"\n"
+		fin += "\n"
+
+		# replace selected string
+		self.view.replace(edit, selection, fin)
+
+
 
 class PicklesFrameworkFuncsWrapInlineTagCommand(sublime_plugin.TextCommand):
 	def run(self, edit, tagName):

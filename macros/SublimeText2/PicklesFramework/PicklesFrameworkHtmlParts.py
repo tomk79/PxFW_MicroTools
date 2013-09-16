@@ -457,6 +457,26 @@ class PicklesFrameworkHtmlPartsAttentionBoxCommand(sublime_plugin.TextCommand):
 		self.view.replace(edit, selection, fin)
 
 
+class PicklesFrameworkHtmlPartsMoreLinksCommand(sublime_plugin.TextCommand):
+	def run(self, edit):
+		# getting selected string
+		selection = self.view.sel()[0]
+		selected_string = self.view.substr(selection)
+
+		# process string
+		fin = ''
+		fin += '<div class="more_links">'+"\n"
+		fin += '	<ul>'+"\n"
+		fin += '		<li><a href="{$href}">{$text}</a></li>'+"\n"
+		fin += '		<li><a href="{$href}">{$text}</a></li>'+"\n"
+		fin += '		<li><a href="{$href}">{$text}</a></li>'+"\n"
+		fin += '	</ul>'+"\n"
+		fin += '</div><!-- /.more_links -->'+"\n"
+		fin += ''+"\n"
+
+		# replace selected string
+		self.view.replace(edit, selection, fin)
+
 
 
 

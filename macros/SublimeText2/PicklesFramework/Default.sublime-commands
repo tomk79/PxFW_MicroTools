@@ -45,6 +45,10 @@
         "command": "pickles_framework_funcs_wrap_block_tag",
         "args": {"tagName":"blockquote"}
     } ,
+    {
+        "caption": "Pickles Framework (PxFW): Functions: Standard form UI",
+        "command": "pickles_framework_funcs_standard_form_ui"
+    } ,
 
 
 
@@ -185,6 +189,10 @@
     {
         "caption": "Pickles Framework (PxFW): HTML Parts Modules: .aside_box",
         "command": "pickles_framework_html_parts_aside_box"
+    } ,
+    {
+        "caption": "Pickles Framework (PxFW): HTML Parts Modules: .more_links",
+        "command": "pickles_framework_html_parts_more_links"
     } ,
 
 
